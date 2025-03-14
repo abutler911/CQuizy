@@ -29,20 +29,52 @@
   <body>
     <div class="starfield"></div>
 
-    <!-- Title -->
-    <header class="text-center py-2">
+    <header class="text-center py-2 position-relative">
+      <button
+        id="theme-toggle"
+        class="btn btn-sm btn-outline-light position-absolute top-0 end-0 m-2"
+      >
+        <i class="fas fa-moon"></i>
+      </button>
       <h1 class="title">CQuizy</h1>
       <h2 class="shimmer">Flashcards</h2>
       <p class="mb-0" id="footer">Copyright &copy; 2025 | Version 1.0</p>
     </header>
 
-    <!-- Main Content -->
+    <div class="timer-display text-light text-center mb-2">
+      <small>Study time: <span id="timer-display">00:00</span></small>
+    </div>
+
     <div
       class="container d-flex flex-column justify-content-center align-items-center"
     >
-      <div class="extra-buttons d-flex justify-content-center mb-0">
+      <div class="extra-buttons d-flex justify-content-center mb-3">
         <a href="limitations.html" class="btn green-btn mx-2">Limitations</a>
         <a href="memory.html" class="btn green-btn mx-2">Memory Items</a>
+      </div>
+
+      <div
+        class="progress mb-2"
+        style="height: 8px; width: 90%; max-width: 370px"
+      >
+        <div
+          id="progress-bar"
+          class="progress-bar bg-success"
+          style="width: 0%"
+        ></div>
+      </div>
+      <div id="progress-text" class="text-light small mb-3"></div>
+
+      <div class="input-group mb-4" style="max-width: 370px">
+        <input
+          type="text"
+          id="search-input"
+          class="form-control"
+          placeholder="Search questions..."
+        />
+        <button id="search-btn" class="btn btn-outline-light">
+          <i class="fas fa-search"></i>
+        </button>
       </div>
 
       <div class="card-container">
@@ -51,14 +83,11 @@
             <button class="bookmark-btn">
               <i class="fas fa-bookmark"></i>
             </button>
-
             <small class="category"></small>
             <hr class="divider" />
             <small class="context"></small>
-
             <div class="question"></div>
           </div>
-
           <div
             class="card-back d-flex justify-content-center align-items-center"
           >
@@ -67,7 +96,7 @@
         </div>
       </div>
 
-      <div class="control-panel">
+      <div class="control-panel mt-4">
         <div class="button-group">
           <button class="arrow-btn left-arrow">
             <i class="fas fa-chevron-left"></i>
@@ -81,20 +110,27 @@
         </div>
         <button id="review-later-btn" class="green-btn">Review Marked</button>
       </div>
-      <!-- Status Messages -->
-      <div class="status-container">
-        <!-- New Spinner -->
+
+      <div class="status-container mt-3">
         <div id="spinner-container">
           <div class="spinner-border" role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
         </div>
-
         <div id="shuffling-message" class="status-message">Shuffling...</div>
       </div>
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
+      <div class="shortcut-helper mt-3 mb-4">
+        <small class="text-light">
+          <span class="badge bg-dark">←→</span> Navigate &nbsp;
+          <span class="badge bg-dark">Space</span> Flip &nbsp;
+          <span class="badge bg-dark">B</span> Bookmark &nbsp;
+          <span class="badge bg-dark">R</span> Shuffle
+        </small>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="./js/script.js"></script>
     <script src="./js/stars.js"></script>
   </body>
