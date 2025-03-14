@@ -1,0 +1,282 @@
+/* Button Styles */
+
+/* Base Button */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-md);
+    line-height: 1.5;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-medium);
+    text-transform: uppercase;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .btn:active {
+    transform: translateY(1px);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .btn:focus {
+    outline: none;
+  }
+  
+  .btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+  
+  /* Control Panel */
+  .control-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(29, 29, 29, 0.5);
+    border: 1px solid var(--color-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md) var(--space-lg);
+    width: 100%;
+    max-width: var(--width-control-panel);
+    margin-top: var(--space-md);
+    margin-bottom: var(--space-md);
+    height: auto;
+    min-height: 150px;
+  }
+  
+  /* Button Group */
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 75%;
+    padding: var(--space-xs) var(--space-md);
+    margin-bottom: var(--space-md);
+  }
+  
+  /* Arrow Buttons */
+  .arrow-btn,
+  .randomize-btn {
+    width: 60px;
+    height: 60px;
+    font-size: var(--font-size-lg);
+    background-color: var(--color-secondary);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-medium), background var(--transition-medium);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: var(--radius-circle);
+  }
+  
+  .arrow-btn:hover,
+  .randomize-btn:hover {
+    background-color: #9c0f7b;
+    transform: scale(1.1);
+  }
+  
+  /* Randomize Button */
+  .randomize-btn {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(196, 196, 196, 0.9) !important;
+  }
+  
+  /* Green Button */
+  .green-btn {
+    color: var(--color-text-dark);
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: var(--radius-md);
+    padding: var(--space-xs) var(--space-md);
+    width: 180px;
+    max-width: 100%;
+    background-color: var(--color-secondary);
+  }
+  
+  .green-btn:hover {
+    color: var(--color-text-light);
+    transform: scale(1.05);
+    background-color: #9c0f7b;
+  }
+  
+  /* Theme Toggle Button */
+  #theme-toggle {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-circle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-md);
+    color: var(--color-text-light);
+    background-color: transparent;
+    border: 1px solid var(--color-text-light);
+    transition: all var(--transition-medium);
+    z-index: var(--z-above);
+  }
+  
+  #theme-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: rotate(15deg);
+  }
+  
+  /* Bookmark Button */
+  .bookmark-btn {
+    position: absolute;
+    bottom: var(--space-md);
+    left: var(--space-md);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: var(--font-size-lg);
+    color: var(--color-secondary);
+    transition: transform var(--transition-fast), color var(--transition-medium);
+    z-index: var(--z-above);
+  }
+  
+  .bookmark-btn.active {
+    color: var(--color-primary);
+    transform: scale(1.2);
+  }
+  
+  .bookmark-btn:hover {
+    transform: scale(1.1);
+  }
+  
+  /* Review Later Button */
+  #review-later-btn {
+    background-color: var(--color-secondary);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-medium), background var(--transition-medium);
+    margin-top: var(--space-lg);
+  }
+  
+  /* Extra Buttons/Navigation */
+  .nav-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+  
+  .shortcut-helper {
+    text-align: center;
+    margin: var(--space-md) 0;
+  }
+  
+  .badge {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: var(--radius-sm);
+    background-color: #333;
+    color: var(--color-text-light);
+  }
+  
+  /* Media Queries */
+  @media (max-width: 768px) {
+    .control-panel {
+      padding: var(--space-sm) var(--space-md);
+    }
+    
+    .button-group {
+      width: 90%;
+    }
+    
+    .arrow-btn,
+    .randomize-btn {
+      width: 50px;
+      height: 50px;
+      font-size: var(--font-size-md);
+    }
+    
+    .randomize-btn {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .green-btn {
+      width: 160px;
+      font-size: var(--font-size-sm);
+    }
+    
+    .shortcut-helper {
+      font-size: var(--font-size-xs);
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .control-panel {
+      width: 90%;
+      height: auto;
+      padding: var(--space-sm);
+      min-height: 120px;
+    }
+    
+    .arrow-btn,
+    .randomize-btn {
+      width: 45px;
+      height: 45px;
+    }
+    
+    .randomize-btn {
+      width: 35px;
+      height: 35px;
+    }
+    
+    .button-group {
+      width: 100%;
+      padding: var(--space-xs);
+    }
+    
+    .green-btn {
+      width: 140px;
+      padding: var(--space-xs);
+      font-size: 0.75rem;
+    }
+    
+    .nav-buttons {
+      flex-direction: row;
+      width: 100%;
+    }
+    
+    .nav-buttons .green-btn {
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+    }
+    
+    .shortcut-helper {
+      display: none;
+    }
+  }

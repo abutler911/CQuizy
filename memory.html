@@ -3,119 +3,231 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Memory Items</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-      rel="stylesheet"
-    />
+    <title>CQuizy - Memory Items</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
     <link rel="icon" href="./favicon/favicon.ico" type="image/x-icon" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Mystery+Quest&family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="./css/styles.css" />
-    <link rel="stylesheet" href="./css/cards.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Mystery+Quest&family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/main.css" />
+    <!-- <link rel="stylesheet" href="./css/cards.css" />
     <link rel="stylesheet" href="./css/tables.css" />
     <link rel="stylesheet" href="./css/buttons.css" />
-    <link rel="stylesheet" href="./css/stars.css" />
+    <link rel="stylesheet" href="./css/stars.css" /> -->
+    <meta name="theme-color" content="#000000" />
   </head>
 
   <body>
     <div class="starfield"></div>
 
-    <!-- Title -->
-    <header class="text-center py-2">
+    <header class="text-center py-2 position-relative">
+      <button id="theme-toggle" class="btn btn-sm btn-outline-light position-absolute top-0 end-0 m-2">
+        <i class="fas fa-moon"></i>
+      </button>
       <h1 class="title">CQuizy</h1>
       <h2 class="shimmer">Memory Items</h2>
-      <p class="mb-0" id="footer">Copyright &copy; 2025 | Version 1.0</p>
+      <p class="mb-0" id="footer">Copyright &copy; <span id="current-year">2025</span> | Version 1.0</p>
     </header>
 
-    <!-- Navigation Buttons -->
-    <div class="extra-buttons d-flex justify-content-center mb-3">
-      <a href="index.html" class="btn green-btn mx-2">Main Menu</a>
-      <a href="limitations.html" class="btn green-btn mx-2">Limitations</a>
+    <div class="timer-display text-light text-center mb-2">
+      <small>Study time: <span id="timer-display">00:00</span></small>
     </div>
 
-    <!-- Memory Items Content -->
-    <div class="container memory-container my-3">
-      <h3 class="text-center text-light mb-3">Aircraft Memory Items</h3>
-      <ul class="memory-list">
-        <li class="list-group-item">
-          <strong>SMOKE EVACUATION</strong>
-          <ul>
-            <li>OXYGEN MASKS - Don, Emer</li>
-            <li>CREW COMMUNICATION - Establish</li>
-            <li>PRESSURIZATION DUMP - Push In</li>
-          </ul>
-        </li>
-        <li class="list-group-item">
-          <strong>SMOKE / FIRE / FUMES</strong>
-          <ul>
-            <li>OXYGEN MASKS - Don, 100%</li>
-            <li>CREW COMMUNICATION - Establish</li>
-          </ul>
-        </li>
-        <li class="list-group-item">
-          <strong>CABIN ALTITUDE HI</strong>
-          <ul>
-            <li>OXYGEN MASKS - Don, 100%</li>
-            <li>CREW COMMUNICATION - Establish</li>
-          </ul>
-        </li>
-        <li class="list-group-item">
-          <strong>JAMMED CONTROL COLUMN - PITCH</strong>
-          <ul>
-            <li>ELEVATOR DISCONNECT HANDLE - Pull</li>
-          </ul>
-        </li>
-        <li class="list-group-item">
-          <strong>JAMMED CONTROL WHEEL - ROLL</strong>
-          <ul>
-            <li>AILERON DISCONNECT HANDLE - Pull</li>
-          </ul>
-        </li>
-        <li class="list-group-item">
-          <strong>PITCH TRIM RUNAWAY</strong>
-          <ul>
-            <li>AP/TRIM DISC BUTTON - Press and Hold</li>
-            <li>PITCH TRIM SYS 1 & 2 CUTOUT BUTTONS - Push In</li>
-          </ul>
-        </li>
-        <li class="list-group-item">
-          <strong>ROLL OR YAW TRIM RUNAWAY</strong>
-          <ul>
-            <li>AP/TRIM DISC BUTTON - Press and Hold</li>
-          </ul>
-        </li>
-        <li class="list-group-item">
-          <strong>STEERING RUNAWAY</strong>
-          <ul>
-            <li>STEER DISC SWITCH - Press</li>
-            <small>Steer airplane using differential braking and rudder.</small>
-          </ul>
-        </li>
-        <li class="list-group-item">
-          <strong>BATT 1 (2) OVERTEMP</strong>
-          <ul>
-            <li>ASSOCIATED BATTERY - Off</li>
-          </ul>
-        </li>
-        <li class="list-group-item">
-          <strong>ENGINE ABNORMAL START</strong>
-          <ul>
-            <h6>AFFECTED ENGINE:</h6>
-            <li>START/STOP SELECTOR - Stop</li>
-          </ul>
-        </li>
-      </ul>
+    <div class="container d-flex flex-column justify-content-center align-items-center">
+      <!-- Navigation Buttons -->
+      <div class="nav-buttons d-flex justify-content-center mb-3">
+        <a href="index.html" class="btn green-btn mx-2">Flashcards</a>
+        <a href="limitations.html" class="btn green-btn mx-2">Limitations</a>
+      </div>
+
+      <!-- Memory Items Content -->
+      <div class="memory-container my-3 w-100">
+        <h3 class="text-center text-light mb-3">Aircraft Memory Items</h3>
+        
+        <div class="accordion" id="memoryAccordion">
+          <!-- Convert list to accordion for better mobile experience -->
+          
+          <!-- SMOKE EVACUATION -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                SMOKE EVACUATION
+              </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#memoryAccordion">
+              <div class="accordion-body">
+                <ul class="list-unstyled mb-0">
+                  <li>OXYGEN MASKS - Don, Emer</li>
+                  <li>CREW COMMUNICATION - Establish</li>
+                  <li>PRESSURIZATION DUMP - Push In</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- SMOKE / FIRE / FUMES -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                SMOKE / FIRE / FUMES
+              </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#memoryAccordion">
+              <div class="accordion-body">
+                <ul class="list-unstyled mb-0">
+                  <li>OXYGEN MASKS - Don, 100%</li>
+                  <li>CREW COMMUNICATION - Establish</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- CABIN ALTITUDE HI -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                CABIN ALTITUDE HI
+              </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#memoryAccordion">
+              <div class="accordion-body">
+                <ul class="list-unstyled mb-0">
+                  <li>OXYGEN MASKS - Don, 100%</li>
+                  <li>CREW COMMUNICATION - Establish</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- JAMMED CONTROL COLUMN - PITCH -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFour">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                JAMMED CONTROL COLUMN - PITCH
+              </button>
+            </h2>
+            <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#memoryAccordion">
+              <div class="accordion-body">
+                <ul class="list-unstyled mb-0">
+                  <li>ELEVATOR DISCONNECT HANDLE - Pull</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- JAMMED CONTROL WHEEL - ROLL -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFive">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive">
+                JAMMED CONTROL WHEEL - ROLL
+              </button>
+            </h2>
+            <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#memoryAccordion">
+              <div class="accordion-body">
+                <ul class="list-unstyled mb-0">
+                  <li>AILERON DISCONNECT HANDLE - Pull</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- PITCH TRIM RUNAWAY -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingSix">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix">
+                PITCH TRIM RUNAWAY
+              </button>
+            </h2>
+            <div id="collapseSix" class="accordion-collapse collapse" data-bs-parent="#memoryAccordion">
+              <div class="accordion-body">
+                <ul class="list-unstyled mb-0">
+                  <li>AP/TRIM DISC BUTTON - Press and Hold</li>
+                  <li>PITCH TRIM SYS 1 & 2 CUTOUT BUTTONS - Push In</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- ROLL OR YAW TRIM RUNAWAY -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingSeven">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven">
+                ROLL OR YAW TRIM RUNAWAY
+              </button>
+            </h2>
+            <div id="collapseSeven" class="accordion-collapse collapse" data-bs-parent="#memoryAccordion">
+              <div class="accordion-body">
+                <ul class="list-unstyled mb-0">
+                  <li>AP/TRIM DISC BUTTON - Press and Hold</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- STEERING RUNAWAY -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingEight">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight">
+                STEERING RUNAWAY
+              </button>
+            </h2>
+            <div id="collapseEight" class="accordion-collapse collapse" data-bs-parent="#memoryAccordion">
+              <div class="accordion-body">
+                <ul class="list-unstyled mb-0">
+                  <li>STEER DISC SWITCH - Press</li>
+                  <li><small>Steer airplane using differential braking and rudder.</small></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- BATT 1 (2) OVERTEMP -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingNine">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine">
+                BATT 1 (2) OVERTEMP
+              </button>
+            </h2>
+            <div id="collapseNine" class="accordion-collapse collapse" data-bs-parent="#memoryAccordion">
+              <div class="accordion-body">
+                <ul class="list-unstyled mb-0">
+                  <li>ASSOCIATED BATTERY - Off</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <!-- ENGINE ABNORMAL START -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTen">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTen">
+                ENGINE ABNORMAL START
+              </button>
+            </h2>
+            <div id="collapseTen" class="accordion-collapse collapse" data-bs-parent="#memoryAccordion">
+              <div class="accordion-body">
+                <h6>AFFECTED ENGINE:</h6>
+                <ul class="list-unstyled mb-0">
+                  <li>START/STOP SELECTOR - Stop</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="stars.js"></script>
+    <script src="./js/theme.js"></script>
+    <script src="./js/stars.js"></script>
+    <script src="./js/timer.js"></script>
+
+    <script>
+      // Update copyright year automatically
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
   </body>
 </html>

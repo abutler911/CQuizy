@@ -3,75 +3,50 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CQuizy!</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-      rel="stylesheet"
-    />
+    <title>CQuizy - Flashcards</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
     <link rel="icon" href="./favicon/favicon.ico" type="image/x-icon" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Mystery+Quest&family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="./css/styles.css" />
-    <link rel="stylesheet" href="./css/cards.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Mystery+Quest&family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/main.css" />
+    <!-- <link rel="stylesheet" href="./css/cards.css" />
     <link rel="stylesheet" href="./css/tables.css" />
     <link rel="stylesheet" href="./css/buttons.css" />
-    <link rel="stylesheet" href="./css/stars.css" />
+    <link rel="stylesheet" href="./css/stars.css" /> -->
+    <meta name="theme-color" content="#000000" />
   </head>
 
   <body>
     <div class="starfield"></div>
 
     <header class="text-center py-2 position-relative">
-      <button
-        id="theme-toggle"
-        class="btn btn-sm btn-outline-light position-absolute top-0 end-0 m-2"
-      >
+      <button id="theme-toggle" class="btn btn-sm btn-outline-light position-absolute top-0 end-0 m-2">
         <i class="fas fa-moon"></i>
       </button>
       <h1 class="title">CQuizy</h1>
       <h2 class="shimmer">Flashcards</h2>
-      <p class="mb-0" id="footer">Copyright &copy; 2025 | Version 1.0</p>
+      <p class="mb-0" id="footer">Copyright &copy; <span id="current-year">2025</span> | Version 1.0</p>
     </header>
 
     <div class="timer-display text-light text-center mb-2">
       <small>Study time: <span id="timer-display">00:00</span></small>
     </div>
 
-    <div
-      class="container d-flex flex-column justify-content-center align-items-center"
-    >
-      <div class="extra-buttons d-flex justify-content-center mb-3">
+    <div class="container d-flex flex-column justify-content-center align-items-center">
+      <div class="nav-buttons d-flex justify-content-center mb-3">
         <a href="limitations.html" class="btn green-btn mx-2">Limitations</a>
         <a href="memory.html" class="btn green-btn mx-2">Memory Items</a>
       </div>
 
-      <div
-        class="progress mb-2"
-        style="height: 8px; width: 90%; max-width: 370px"
-      >
-        <div
-          id="progress-bar"
-          class="progress-bar bg-success"
-          style="width: 0%"
-        ></div>
+      <div class="progress mb-2" style="height: 8px; width: 90%; max-width: 370px">
+        <div id="progress-bar" class="progress-bar bg-success" style="width: 0%"></div>
       </div>
       <div id="progress-text" class="text-light small mb-3"></div>
 
       <div class="input-group mb-4" style="max-width: 370px">
-        <input
-          type="text"
-          id="search-input"
-          class="form-control"
-          placeholder="Search questions..."
-        />
+        <input type="text" id="search-input" class="form-control" placeholder="Search questions..." />
         <button id="search-btn" class="btn btn-outline-light">
           <i class="fas fa-search"></i>
         </button>
@@ -88,9 +63,7 @@
             <small class="context"></small>
             <div class="question"></div>
           </div>
-          <div
-            class="card-back d-flex justify-content-center align-items-center"
-          >
+          <div class="card-back d-flex justify-content-center align-items-center">
             <div class="answer"></div>
           </div>
         </div>
@@ -130,8 +103,16 @@
       </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="./js/script.js"></script>
+    <script src="./js/theme.js"></script>
     <script src="./js/stars.js"></script>
+    <script src="./js/timer.js"></script>
+    <script src="./js/script.js"></script>
+
+    <script>
+      // Update copyright year automatically
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
   </body>
 </html>

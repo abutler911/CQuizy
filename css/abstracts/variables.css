@@ -1,0 +1,119 @@
+/* Color Variables */
+:root {
+    /* Primary Colors */
+    --color-primary: #28a745;
+    --color-secondary: #a7288a;
+    --color-tertiary: #6c757d;
+    
+    /* Background Colors */
+    --color-bg-dark: #000000;
+    --color-bg-light: #f8f9fa;
+    
+    /* Text Colors */
+    --color-text-dark: #333333;
+    --color-text-light: #ffffff;
+    --color-text-muted: #999999;
+    
+    /* State Colors */
+    --color-success: #28a745;
+    --color-warning: #ffc107;
+    --color-danger: #dc3545;
+    --color-info: #17a2b8;
+    
+    /* Gradients */
+    --gradient-card-front: linear-gradient(145deg, #ffffff, #e6e6e6);
+    --gradient-card-front-hover: linear-gradient(145deg, #e6e6e6, #f2f2f2);
+    --gradient-memory-item: linear-gradient(145deg, #1e1e1e, #333);
+    
+    /* Borders */
+    --border-light: rgba(255, 255, 255, 0.7);
+    --border-dark: rgba(0, 0, 0, 0.2);
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+    --shadow-inset: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+    
+    /* Border Radius */
+    --radius-sm: 5px;
+    --radius-md: 10px;
+    --radius-lg: 15px;
+    --radius-circle: 50%;
+    
+    /* Spacing */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease-in-out;
+    --transition-medium: 0.3s ease-in-out;
+    --transition-slow: 0.8s ease-in-out;
+    
+    /* Font Sizes */
+    --font-size-xs: 0.6rem;
+    --font-size-sm: 0.8rem;
+    --font-size-md: 1rem;
+    --font-size-lg: 1.2rem;
+    --font-size-xl: 1.5rem;
+    --font-size-2xl: 2rem;
+    --font-size-3xl: 3rem;
+    
+    /* Z-index levels */
+    --z-below: -1;
+    --z-normal: 1; 
+    --z-above: 10;
+    --z-modal: 100;
+    --z-highest: 1000;
+    
+    /* Container widths */
+    --width-card: 370px;
+    --width-control-panel: 370px;
+    
+    /* Icon sizes */
+    --icon-size-sm: 1rem;
+    --icon-size-md: 1.4rem;
+    --icon-size-lg: 1.8rem;
+  }
+  
+  /* Dark mode / Light mode specific variables */
+  .light-mode {
+    --color-bg: var(--color-bg-light);
+    --color-text: var(--color-text-dark);
+    --color-accent: var(--color-secondary);
+    --color-header-bg: var(--color-secondary);
+    --color-card-bg: #ffffff;
+    --color-card-text: var(--color-text-dark);
+    --color-card-back: var(--color-primary);
+    --color-card-back-text: var(--color-text-light);
+    --color-btn-outline: var(--color-text-dark);
+    --color-progress-bg: #ddd;
+    --color-table-bg: #ffffff;
+    --color-table-text: var(--color-text-dark);
+    --color-table-border: #dee2e6;
+    --color-table-row-alt: rgba(0, 0, 0, 0.05);
+    --color-accordion-bg: #f8f9fa;
+    --starfield-opacity: 0.2;
+  }
+  
+  :root:not(.light-mode) {
+    --color-bg: var(--color-bg-dark);
+    --color-text: var(--color-text-light);
+    --color-accent: var(--color-primary);
+    --color-header-bg: var(--color-primary);
+    --color-card-bg: var(--color-text-light);
+    --color-card-text: var(--color-text-dark);
+    --color-card-back: var(--color-primary);
+    --color-card-back-text: var(--color-text-light);
+    --color-btn-outline: var(--color-text-light);
+    --color-progress-bg: #444;
+    --color-table-bg: rgba(0, 0, 0, 1);
+    --color-table-text: #d4d4d4;
+    --color-table-border: rgba(255, 255, 255, 0.1);
+    --color-table-row-alt: rgba(255, 255, 255, 0.05);
+    --color-accordion-bg: #333;
+    --starfield-opacity: 1;
+  }

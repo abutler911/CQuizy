@@ -1,0 +1,80 @@
+/* Main CSS File - Imports all modular stylesheets */
+
+/* Import Variables */
+@import 'abstracts/variables.css';
+
+/* Import Base Styles */
+@import 'base/base.css';
+
+/* Import Components */
+@import 'components/buttons.css';
+@import 'components/cards.css';
+@import 'components/tables.css';
+@import 'components/stars.css';
+
+/* Print Styles */
+@media print {
+  .starfield, 
+  .header,
+  .button-group,
+  .control-panel,
+  .shortcut-helper,
+  .nav-buttons,
+  .timer-display,
+  .bookmark-btn,
+  .green-btn,
+  #theme-toggle {
+    display: none !important;
+  }
+  
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+  
+  .container {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .table th {
+    background-color: #eee !important;
+    color: black !important;
+  }
+  
+  .table,
+  .table th,
+  .table td {
+    border: 1px solid #ddd !important;
+    color: black !important;
+  }
+  
+  .table tr:nth-child(even) td {
+    background-color: #f9f9f9 !important;
+  }
+  
+  .memory-list .list-group-item {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    background: white !important;
+    color: black !important;
+    border: 1px solid #ddd !important;
+  }
+  
+  .memory-list .list-group-item strong {
+    color: black !important;
+    font-weight: bold !important;
+  }
+  
+  .memory-list .list-group-item ul li {
+    color: black !important;
+  }
+  
+  /* Force page breaks */
+  .memory-container,
+  .limitations-container {
+    page-break-before: always;
+  }
+}
