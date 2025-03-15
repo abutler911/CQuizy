@@ -26,7 +26,7 @@
       <p class="mb-0" id="footer">Copyright &copy; <span id="current-year">2025</span> | Version 1.0</p>
     </header>
 
-    <div class="timer-display text-light text-center mb-2">
+    <div class="timer-display text-center mb-2">
       <small>Study time: <span id="timer-display">00:00</span></small>
     </div>
 
@@ -39,11 +39,11 @@
       <div class="progress mb-2" style="height: 8px; width: 90%; max-width: 370px">
         <div id="progress-bar" class="progress-bar bg-success" style="width: 0%"></div>
       </div>
-      <div id="progress-text" class="text-light small mb-3"></div>
+      <div id="progress-text" class="small mb-3"></div>
 
       <div class="input-group mb-4" style="max-width: 370px">
         <input type="text" id="search-input" class="form-control" placeholder="Search questions..." />
-        <button id="search-btn" class="btn btn-outline-light">
+        <button id="search-btn" class="btn btn-outline-secondary">
           <i class="fas fa-search"></i>
         </button>
       </div>
@@ -66,18 +66,20 @@
       </div>
 
       <div class="control-panel mt-4">
-        <div class="button-group">
-          <button class="arrow-btn left-arrow">
+        <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
+          <button class="btn btn-lg btn-primary rounded-circle shadow-sm left-arrow" style="width: 60px; height: 60px;">
             <i class="fas fa-chevron-left"></i>
           </button>
-          <button class="btn randomize-btn" id="randomize-btn">
+          <button class="btn btn-lg btn-info rounded-circle shadow" id="randomize-btn" style="width: 70px; height: 70px;">
             <i class="fas fa-random"></i>
           </button>
-          <button class="arrow-btn right-arrow">
+          <button class="btn btn-lg btn-primary rounded-circle shadow-sm right-arrow" style="width: 60px; height: 60px;">
             <i class="fas fa-chevron-right"></i>
           </button>
         </div>
-        <button id="review-later-btn" class="green-btn">Review Marked</button>
+        <button id="review-later-btn" class="btn btn-success rounded-pill px-4 py-2 d-block mx-auto shadow-sm">
+          <i class="fas fa-bookmark me-2"></i>Review Marked
+        </button>
       </div>
 
       <div class="status-container mt-3">
@@ -90,7 +92,7 @@
       </div>
 
       <div class="shortcut-helper mt-3 mb-4">
-        <small class="text-light">
+        <small>
           <span class="badge bg-dark">←→</span> Navigate &nbsp;
           <span class="badge bg-dark">Space</span> Flip &nbsp;
           <span class="badge bg-dark">B</span> Bookmark &nbsp;
