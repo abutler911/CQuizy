@@ -1,4 +1,4 @@
-/* Table and List Styles */
+/* Table and List Styles - Professional Edition */
 
 /* Memory Container */
 .memory-container,
@@ -7,8 +7,9 @@
   max-width: 800px;
   margin: 0 auto;
   padding: var(--space-md);
-  background: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.2);
   border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
 }
 
 /* Memory Lists */
@@ -19,20 +20,18 @@
 }
 
 .memory-list .list-group-item {
-  background: var(--gradient-memory-item);
-  color: var(--color-text-light);
-  border: 1px solid var(--color-table-border);
+  background-color: var(--color-card-bg);
+  color: var(--color-text);
+  border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
   margin-bottom: var(--space-md);
   padding: var(--space-md);
-  transition: transform var(--transition-medium), box-shadow var(--transition-medium), background var(--transition-medium);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .memory-list .list-group-item:hover {
-  transform: scale(1.02);
-  box-shadow: 0 4px 10px rgba(0, 255, 0, 0.4);
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid var(--color-primary);
+  border-color: var(--color-primary);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .memory-list .list-group-item strong {
@@ -41,17 +40,18 @@
   text-transform: uppercase;
   display: block;
   margin-bottom: var(--space-sm);
+  font-weight: 600;
 }
 
 .memory-list .list-group-item ul {
-  margin-left: var(--space-lg);
+  margin-left: var(--space-md);
   padding-left: 0;
   list-style: disc;
 }
 
 .memory-list .list-group-item ul li {
   margin: var(--space-xs) 0;
-  color: var(--color-text-light);
+  color: var(--color-text);
   font-size: var(--font-size-sm);
 }
 
@@ -64,7 +64,7 @@
   font-size: var(--font-size-md);
   color: var(--color-primary);
   margin: var(--space-sm) 0 var(--space-xs);
-  font-weight: bold;
+  font-weight: 600;
 }
 
 /* Tables */
@@ -96,15 +96,15 @@
 .table th {
   background-color: var(--color-primary);
   color: var(--color-text-light);
-  font-weight: bold;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
   white-space: nowrap;
 }
 
 .table-dark {
   color: var(--color-text-light);
-  background-color: #343a40;
+  background-color: var(--color-card-bg);
 }
 
 .table-bordered {
@@ -113,12 +113,6 @@
 
 .table tr:nth-child(even) td {
   background-color: var(--color-table-row-alt);
-}
-
-.table-hover tbody tr:hover {
-  background-color: var(--color-primary);
-  color: var(--color-text-light);
-  transition: background var(--transition-medium), color var(--transition-medium);
 }
 
 /* Accordion Styles */
@@ -131,7 +125,7 @@
   border: 1px solid var(--color-table-border);
   border-radius: var(--radius-md);
   overflow: hidden;
-  background-color: transparent;
+  background-color: var(--color-card-bg);
 }
 
 .accordion-header {
@@ -143,7 +137,7 @@
   display: flex;
   align-items: center;
   width: 100%;
-  padding: var(--space-md) var(--space-lg);
+  padding: var(--space-md);
   font-size: var(--font-size-md);
   color: var(--color-text);
   text-align: left;
@@ -151,7 +145,8 @@
   border: 0;
   border-radius: 0;
   overflow-anchor: none;
-  transition: color var(--transition-medium), background-color var(--transition-medium);
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+  font-weight: 500;
 }
 
 .accordion-button:not(.collapsed) {
@@ -168,7 +163,7 @@
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-size: 1.25rem;
-  transition: transform var(--transition-medium);
+  transition: transform var(--transition-fast);
 }
 
 .accordion-button:not(.collapsed)::after {
@@ -177,14 +172,13 @@
 
 .accordion-body {
   padding: var(--space-md);
-  background-color: transparent;
+  background-color: var(--color-card-bg);
 }
 
 /* V-Speed Style */
 .v-speed {
-  font-style: italic;
-  font-weight: bold;
-  font-size: 1.1em;
+  font-style: normal;
+  font-weight: 600;
 }
 
 /* Timer Display */
@@ -192,7 +186,7 @@
   text-align: center;
   margin-bottom: var(--space-sm);
   font-size: var(--font-size-sm);
-  color: var(--color-text-light);
+  color: var(--color-text-muted);
 }
 
 /* Status Container */
@@ -206,13 +200,12 @@
 }
 
 .status-message {
-  font-size: var(--font-size-md);
-  font-weight: bold;
-  color: var(--color-text-light);
-  background: transparent;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text);
+  background-color: transparent;
   padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
   text-align: center;
   width: fit-content;
   min-width: 120px;
@@ -227,8 +220,8 @@
 
 .spinner-border {
   color: var(--color-primary) !important;
-  width: 2rem;
-  height: 2rem;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 /* Media Queries */
@@ -248,7 +241,7 @@
   }
   
   .accordion-button {
-    padding: var(--space-sm) var(--space-md);
+    padding: var(--space-sm);
     font-size: var(--font-size-sm);
   }
   
@@ -295,12 +288,8 @@
     margin-bottom: var(--space-xs);
   }
   
-  .v-speed {
-    font-size: 1em;
-  }
-  
   .spinner-border {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 1.25rem;
+    height: 1.25rem;
   }
 }

@@ -17,7 +17,8 @@ const spinnerContainer = document.getElementById("spinner-container");
 const shufflingMessage = document.getElementById("shuffling-message");
 const searchInput = document.getElementById("search-input");
 const searchBtn = document.getElementById("search-btn");
-const themeToggle = document.getElementById("theme-toggle");
+// Theme is now handled by theme.js, so we don't need this reference
+// const themeToggle = document.getElementById("theme-toggle"); 
 
 questionNumberElement.classList.add("question-number");
 cardFront.appendChild(questionNumberElement);
@@ -25,24 +26,13 @@ cardFront.appendChild(questionNumberElement);
 spinnerContainer.style.display = "none";
 shufflingMessage.style.display = "none";
 
-const categoryFilter = document.createElement("select");
-categoryFilter.id = "category-filter";
-categoryFilter.className = "form-select mb-3";
-const defaultOption = document.createElement("option");
-defaultOption.value = "";
-defaultOption.textContent = "All Categories";
-categoryFilter.appendChild(defaultOption);
-
-document
-  .querySelector(".container")
-  .insertBefore(categoryFilter, document.querySelector(".card-container"));
+// Category filter creation removed
 
 const STORAGE_VERSION = "1.0";
 const STORAGE_KEYS = {
   BOOKMARKS: "cquizy_bookmarks",
   LAST_POSITION: "cquizy_lastPosition",
   VERSION: "cquizy_version",
-  THEME: "theme_preference",
   STATS: "cquizy_stats",
 };
 
@@ -51,9 +41,11 @@ let questions = [];
 let fullQuestionSet = [];
 let reviewingBookmarks = false;
 let bookmarkedQuestions = [];
-let darkMode = true;
-let studyTimer;
-let studySeconds = 0;
+// These are now handled by theme.js
+// let darkMode = true;
+// Timer is now handled by timer.js
+// let studyTimer;
+// let studySeconds = 0;
 
 const stats = {
   cardsViewed: 0,
@@ -105,36 +97,12 @@ async function fetchQuestions(category = null) {
 
     questions = data;
     fullQuestionSet = [...data];
-    loadCategories();
     loadQuestion(0);
   } catch (error) {
     alert(`Failed to load questions: ${error.message}`);
   } finally {
     spinnerContainer.style.display = "none";
   }
-}
-
-function loadCategories() {
-  const categories = [];
-
-  questions.forEach((q) => {
-    if (q.category && !categories.includes(q.category)) {
-      categories.push(q.category);
-    }
-  });
-
-  categories.sort();
-
-  while (categoryFilter.children.length > 1) {
-    categoryFilter.removeChild(categoryFilter.lastChild);
-  }
-
-  categories.forEach((category) => {
-    const option = document.createElement("option");
-    option.value = category;
-    option.textContent = category;
-    categoryFilter.appendChild(option);
-  });
 }
 
 function loadQuestion(index) {
@@ -266,7 +234,7 @@ function saveToStorage(key, value) {
 function savePosition() {
   const position = {
     index: currentQuestionIndex,
-    category: categoryFilter.value || null,
+    category: null, // Removed category reference since filter is gone
     reviewingBookmarks,
   };
 
@@ -276,10 +244,6 @@ function savePosition() {
 function restorePosition() {
   const position = getFromStorage(STORAGE_KEYS.LAST_POSITION);
   if (!position) return;
-
-  if (position.category) {
-    categoryFilter.value = position.category;
-  }
 
   if (position.reviewingBookmarks) {
     showBookmarkedQuestions();
@@ -351,31 +315,12 @@ function handleKeyPress(event) {
   }
 }
 
-function toggleTheme() {
-  darkMode = !darkMode;
-  document.body.classList.toggle("light-mode");
-  themeToggle.innerHTML = darkMode
-    ? '<i class="fas fa-moon"></i>'
-    : '<i class="fas fa-sun"></i>';
-  saveToStorage(STORAGE_KEYS.THEME, darkMode);
-}
+// Theme toggling is now handled by theme.js
+// function toggleTheme() removed
 
-function startStudyTimer() {
-  const timerDisplay = document.getElementById("timer-display");
-
-  studyTimer = setInterval(() => {
-    studySeconds++;
-    const minutes = Math.floor(studySeconds / 60);
-    const seconds = studySeconds % 60;
-    timerDisplay.textContent = `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
-  }, 1000);
-}
-
-function stopStudyTimer() {
-  clearInterval(studyTimer);
-}
+// Timer is now handled by timer.js
+// function startStudyTimer() removed
+// function stopStudyTimer() removed
 
 function searchQuestions() {
   const searchTerm = searchInput.value.toLowerCase().trim();
@@ -407,16 +352,11 @@ async function initializeApp() {
 
     bookmarkedQuestions = getFromStorage(STORAGE_KEYS.BOOKMARKS, []);
 
-    const savedTheme = getFromStorage(STORAGE_KEYS.THEME, true);
-    if (!savedTheme) {
-      document.body.classList.add("light-mode");
-      themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-      darkMode = false;
-    }
+    // Theme initialization is now handled by theme.js
+    // Timer initialization is now handled by timer.js
 
     await fetchQuestions();
     restorePosition();
-    startStudyTimer();
   } catch (error) {
     console.error("Failed to initialize app:", error);
     alert(
@@ -475,26 +415,11 @@ document
   .addEventListener("click", shuffleQuestions);
 bookmarkButton.addEventListener("click", toggleBookmark);
 reviewLaterButton.addEventListener("click", showBookmarkedQuestions);
-themeToggle.addEventListener("click", toggleTheme);
+// Theme toggle is now handled by theme.js
+// themeToggle.addEventListener("click", toggleTheme); 
 searchBtn.addEventListener("click", searchQuestions);
 searchInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") searchQuestions();
-});
-
-categoryFilter.addEventListener("change", async () => {
-  try {
-    currentQuestionIndex = 0;
-    reviewingBookmarks = false;
-    reviewLaterButton.textContent = "Review Later";
-
-    if (categoryFilter.value) {
-      await fetchQuestions(categoryFilter.value);
-    } else {
-      await fetchQuestions();
-    }
-  } catch (error) {
-    console.error("Error filtering questions:", error);
-  }
 });
 
 buttons.forEach((button) => {
@@ -515,7 +440,7 @@ buttons.forEach((button) => {
 
 window.addEventListener("beforeunload", () => {
   saveUserProgress();
-  stopStudyTimer();
+  // Timer stopping is now handled by timer.js
 });
 
 window.addEventListener("keydown", handleKeyPress);

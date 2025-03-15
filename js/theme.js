@@ -1,8 +1,11 @@
-// Theme Switching Functionality
+/**
+ * theme.js - Handles theme switching functionality
+ * Switches between light and dark mode
+ */
 document.addEventListener('DOMContentLoaded', function() {
     const themeToggle = document.getElementById('theme-toggle');
-    const body = document.body;
-    const icon = themeToggle.querySelector('i');
+    const icon = themeToggle?.querySelector('i');
+    const htmlRoot = document.documentElement;
     
     // Check for saved theme preference
     const savedTheme = localStorage.getItem('theme');
@@ -15,8 +18,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Toggle theme when button is clicked
-    themeToggle.addEventListener('click', function() {
-      if (body.classList.contains('light-mode')) {
+    themeToggle?.addEventListener('click', function() {
+      if (htmlRoot.classList.contains('light-mode')) {
         enableDarkMode();
       } else {
         enableLightMode();
@@ -24,16 +27,30 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     function enableLightMode() {
-      body.classList.add('light-mode');
-      icon.classList.remove('fa-sun');
-      icon.classList.add('fa-moon');
+      htmlRoot.classList.add('light-mode');
+      if (icon) {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+      }
       localStorage.setItem('theme', 'light');
     }
     
     function enableDarkMode() {
-      body.classList.remove('light-mode');
-      icon.classList.remove('fa-moon');
-      icon.classList.add('fa-sun');
+      htmlRoot.classList.remove('light-mode');
+      if (icon) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+      }
       localStorage.setItem('theme', 'dark');
+    }
+    
+    // Match system preference if no saved preference
+    if (!savedTheme) {
+      const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (prefersDarkMode) {
+        enableDarkMode();
+      } else {
+        enableLightMode();
+      }
     }
   });

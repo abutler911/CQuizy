@@ -1,4 +1,4 @@
-/* Main CSS File - Imports all modular stylesheets */
+/* Main CSS File - Professional Edition */
 
 /* Import Variables */
 @import 'abstracts/variables.css';
@@ -40,7 +40,7 @@
   }
   
   .table th {
-    background-color: #eee !important;
+    background-color: #f5f5f5 !important;
     color: black !important;
   }
   

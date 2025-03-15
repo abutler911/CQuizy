@@ -1,6 +1,10 @@
-// Study Timer Functionality
+/**
+ * timer.js - Simple study timer
+ * Tracks study time across pages
+ */
 document.addEventListener('DOMContentLoaded', function() {
     const timerDisplay = document.getElementById('timer-display');
+    if (!timerDisplay) return;
     
     // Check for saved timer value
     let secondsElapsed = parseInt(localStorage.getItem('studyTimer') || '0');

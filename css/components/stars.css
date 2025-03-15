@@ -1,4 +1,4 @@
-/* Starfield Background Animation */
+/* Starfield Background - Subtle Professional Edition */
 
 .starfield {
     position: fixed;
@@ -6,73 +6,35 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #000;
+    background-color: #121212;
+    background-image: radial-gradient(circle at top right, rgba(41, 41, 41, 0.7) 0%, rgba(0, 0, 0, 0) 70%),
+                      radial-gradient(circle at bottom left, rgba(41, 41, 41, 0.7) 0%, rgba(0, 0, 0, 0) 70%);
     overflow: hidden;
     z-index: var(--z-below);
     opacity: var(--starfield-opacity);
     transition: opacity var(--transition-medium);
   }
   
-  .starfield:before {
-    content: "";
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    background: transparent;
-  }
-  
-  /* Individual Star */
+  /* Individual Star - Subtle Version */
   .star {
     position: absolute;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.8);
     border-radius: var(--radius-circle);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-    opacity: 0.8;
-    z-index: var(--z-below);
-  }
-  
-  /* Shooting Star Effect */
-  .shooting-star {
-    position: absolute;
-    background-color: white;
-    border-radius: var(--radius-circle);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
-                0 0 20px rgba(255, 255, 255, 0.5);
-    pointer-events: none;
-    opacity: 1;
-    z-index: var(--z-below);
-  }
-  
-  /* Shooting Star Trail */
-  .trail {
-    position: absolute;
-    background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0.8),
-      rgba(255, 255, 255, 0)
-    );
-    border-radius: var(--radius-circle);
-    pointer-events: none;
-    opacity: 0.5;
+    box-shadow: 0 0 1px rgba(255, 255, 255, 0.3);
+    opacity: 0.4;
     z-index: var(--z-below);
   }
   
   /* Media Queries */
   @media (max-width: 768px) {
-    /* Reduce number/size of stars for better performance on mobile */
     .star {
-      opacity: 0.6;
-    }
-    
-    .shooting-star {
-      box-shadow: 0 0 5px rgba(255, 255, 255, 0.7),
-                  0 0 10px rgba(255, 255, 255, 0.4);
+      opacity: 0.3;
     }
   }
   
   /* Optional: Turn off animations when user prefers reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .star, .shooting-star, .trail {
+    .star {
       animation: none !important;
       transition: none !important;
     }
