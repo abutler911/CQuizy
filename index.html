@@ -18,7 +18,7 @@
     <div class="starfield"></div>
 
     <header class="text-center py-2 position-relative">
-      <button id="theme-toggle" class="btn btn-sm btn-outline-light position-absolute top-0 end-0 m-2">
+      <button id="theme-toggle" class="theme-toggle-btn position-absolute top-0 end-0">
         <i class="fas fa-moon"></i>
       </button>
       <h1 class="title">CQuizy</h1>
@@ -43,7 +43,7 @@
 
       <div class="input-group mb-4" style="max-width: 370px">
         <input type="text" id="search-input" class="form-control" placeholder="Search questions..." />
-        <button id="search-btn" class="btn btn-outline-secondary">
+        <button id="search-btn">
           <i class="fas fa-search"></i>
         </button>
       </div>
@@ -66,18 +66,18 @@
       </div>
 
       <div class="control-panel mt-4">
-        <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
-          <button class="btn btn-lg btn-primary rounded-circle shadow-sm left-arrow" style="width: 60px; height: 60px;">
+        <div class="button-group">
+          <button class="arrow-btn left-arrow">
             <i class="fas fa-chevron-left"></i>
           </button>
-          <button class="btn btn-lg btn-info rounded-circle shadow" id="randomize-btn" style="width: 70px; height: 70px;">
+          <button class="randomize-btn" id="randomize-btn">
             <i class="fas fa-random"></i>
           </button>
-          <button class="btn btn-lg btn-primary rounded-circle shadow-sm right-arrow" style="width: 60px; height: 60px;">
+          <button class="arrow-btn right-arrow">
             <i class="fas fa-chevron-right"></i>
           </button>
         </div>
-        <button id="review-later-btn" class="btn btn-success rounded-pill px-4 py-2 d-block mx-auto shadow-sm">
+        <button id="review-later-btn">
           <i class="fas fa-bookmark me-2"></i>Review Marked
         </button>
       </div>
@@ -93,10 +93,10 @@
 
       <div class="shortcut-helper mt-3 mb-4">
         <small>
-          <span class="badge bg-dark">←→</span> Navigate &nbsp;
-          <span class="badge bg-dark">Space</span> Flip &nbsp;
-          <span class="badge bg-dark">B</span> Bookmark &nbsp;
-          <span class="badge bg-dark">R</span> Shuffle
+          <span class="badge">←→</span> Navigate &nbsp;
+          <span class="badge">Space</span> Flip &nbsp;
+          <span class="badge">B</span> Bookmark &nbsp;
+          <span class="badge">R</span> Shuffle
         </small>
       </div>
     </div>
