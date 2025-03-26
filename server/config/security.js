@@ -6,6 +6,35 @@ import session from "express-session";
 import environment from "./environment.js";
 
 export const setupSecurity = (app) => {
+  // CORS configuration with dynamic origin handling
+  const corsOptions = {
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      // Check if the origin is in the allowed list
+      if (environment.allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+      "Origin",
+      "X-CSRF-Token",
+    ],
+    optionsSuccessStatus: 200,
+  };
+
+  // Apply CORS first
+  app.use(cors(corsOptions));
+
   // Cookie parser
   app.use(cookieParser(environment.cookieSecret));
 
@@ -33,7 +62,10 @@ export const setupSecurity = (app) => {
           scriptSrc: ["'self'", "'unsafe-inline'"],
           styleSrc: ["'self'", "'unsafe-inline'"],
           imgSrc: ["'self'", "data:"],
-          connectSrc: ["'self'"],
+          connectSrc: [
+            "'self'",
+            ...environment.allowedOrigins, // Dynamically add allowed origins
+          ],
           fontSrc: ["'self'"],
           objectSrc: ["'none'"],
           mediaSrc: ["'self'"],
@@ -55,16 +87,6 @@ export const setupSecurity = (app) => {
       referrerPolicy: { policy: "strict-origin-when-cross-origin" },
       xssFilter: true,
       noSniff: true,
-    })
-  );
-
-  // CORS configuration
-  app.use(
-    cors({
-      origin: environment.allowedOrigins,
-      credentials: true,
-      methods: ["GET", "POST", "PUT", "DELETE"],
-      allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"],
     })
   );
 

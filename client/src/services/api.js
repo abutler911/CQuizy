@@ -1,5 +1,4 @@
 // src/services/api.js
-
 // Use environment variable for API URL with fallback
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1";
@@ -16,22 +15,52 @@ export const fetchFromAPI = async (endpoint, options = {}) => {
     const defaultOptions = {
       method: "GET",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        // Optional: Add an Accept header to specify expected response type
+        Accept: "application/json",
+      },
     };
 
-    const response = await fetch(url, { ...defaultOptions, ...options });
+    // Merge default options with provided options
+    const mergedOptions = {
+      ...defaultOptions,
+      ...options,
+      headers: {
+        ...defaultOptions.headers,
+        ...options.headers,
+      },
+    };
 
+    const response = await fetch(url, mergedOptions);
+
+    // Handle different types of error responses
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        // Fallback to text if JSON parsing fails
+        errorData = await response.text();
+      }
+
+      // Create a more informative error
+      const error = new Error(
         errorData.error ||
+          errorData.message ||
           `Server error: ${response.status} - ${response.statusText}`
       );
+      error.status = response.status;
+      error.details = errorData;
+      throw error;
     }
 
+    // Parse JSON response
     return await response.json();
   } catch (error) {
     console.error(`API Error (${endpoint}):`, error);
+
+    // Re-throw the error for the caller to handle
     throw error;
   }
 };
