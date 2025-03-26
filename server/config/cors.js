@@ -2,6 +2,8 @@ import cors from "cors";
 import environment from "./environment.js";
 
 export const configureCORS = () => {
+  const isDev = environment.nodeEnv !== "production";
+
   const allowedOrigins = [
     "https://cquizy.com",
     "https://www.cquizy.com",
@@ -9,7 +11,7 @@ export const configureCORS = () => {
   ];
 
   if (isDev) {
-    allowedOrigins.push("https://localhost:5173");
+    allowedOrigins.push("http://localhost:5173");
   }
 
   return cors({
@@ -18,6 +20,7 @@ export const configureCORS = () => {
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.warn(`🚫 Blocked by CORS: ${origin}`);
         callback(new Error("Not allowed by CORS"));
       }
     },
