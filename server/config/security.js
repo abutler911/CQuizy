@@ -74,9 +74,9 @@ export const setupSecurity = (app) => {
   const csrfProtection = csrf({
     cookie: {
       key: "_csrf",
-      secure: environment.isProduction,
+      secure: true,
       httpOnly: true,
-      sameSite: environment.isProduction ? "strict" : "lax",
+      sameSite: "none",
       maxAge: 3600,
     },
   });
