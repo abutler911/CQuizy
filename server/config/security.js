@@ -7,44 +7,6 @@ import MongoStore from "connect-mongo";
 import environment from "./environment.js";
 
 export const setupSecurity = (app) => {
-  // CORS configuration with dynamic origin handling
-  const corsOptions = {
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-
-      // Normalize origins by removing protocol and www
-      const normalizedOrigins = environment.allowedOrigins.map((url) =>
-        url.replace(/^https?:\/\//, "").replace(/^www\./, "")
-      );
-
-      const normalizedRequestOrigin = origin
-        .replace(/^https?:\/\//, "")
-        .replace(/^www\./, "");
-
-      if (normalizedOrigins.includes(normalizedRequestOrigin)) {
-        callback(null, true);
-      } else {
-        console.warn(`CORS blocked for origin: ${origin}`);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "X-Requested-With",
-      "Accept",
-      "Origin",
-      "X-CSRF-Token",
-    ],
-    optionsSuccessStatus: 200,
-  };
-
-  // Apply CORS first
-  app.use(cors(corsOptions));
-
   // Cookie parser
   app.use(cookieParser(environment.cookieSecret));
 

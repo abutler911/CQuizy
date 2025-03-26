@@ -1,3 +1,4 @@
+// app.js
 import express from "express";
 import bodyParser from "body-parser";
 import compression from "compression";
@@ -14,19 +15,23 @@ import {
   configureErrorHandlers,
 } from "./loaders/index.js";
 
+// Import and apply CORS
+import configureCORS from "./config/cors.js";
+app.use(configureCORS());
+
 // Configure Express
 configureExpress(app);
 
-// Configure Logging
+// Logging
 configureLogging(app);
 
-// Configure Security
+// Security (NO CORS here anymore!)
 configureSecurity(app);
 
-// Configure Routes
+// API Routes
 configureRoutes(app);
 
-// Configure Error Handlers
+// Global error handlers
 configureErrorHandlers(app);
 
 export default app;
