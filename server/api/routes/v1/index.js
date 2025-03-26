@@ -11,12 +11,7 @@ const { csrfProtection } = setupSecurity(express());
 router.use("/health", healthRoutes);
 
 // Read-only question routes (no CSRF protection)
-const publicRouter = express.Router();
-publicRouter.get("/", (req, res, next) => {
-  req.method = "GET"; // Ensure only GET requests
-  questionRoutes(req, res, next);
-});
-router.use("/questions/public", publicRouter);
+router.get("/questions/public", questionRoutes);
 
 // Protected routes (with CSRF protection)
 router.use("/csrf-token", csrfProtection, csrfRoutes);

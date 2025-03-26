@@ -7,13 +7,32 @@ export default (app) => {
   // Setup Swagger documentation
   setupSwagger(app);
 
-  // Welcome route
+  // Welcome route with more informative response
   app.get("/", (req, res) => {
-    res.send("Welcome to the CQuizy API");
+    res.json({
+      message: "Welcome to the CQuizy API",
+      version: "v1",
+      status: "operational",
+      documentation: "/api-docs",
+    });
   });
 
   // API routes with versioning and rate limiting
   app.use("/api", apiLimiter, apiRouter);
+
+  // Catch-all route for debugging
+  app.use((req, res) => {
+    res.status(404).json({
+      error: "Route not found",
+      requestedUrl: req.originalUrl,
+      method: req.method,
+      availableRoutes: [
+        "/api/v1/questions",
+        "/api/v1/health",
+        "/api/v1/csrf-token",
+      ],
+    });
+  });
 
   return app;
 };
