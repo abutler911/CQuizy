@@ -14,13 +14,19 @@ export const configureCORS = () => {
     allowedOrigins.push("http://localhost:5173");
   }
 
+  console.log("✅ CORS middleware configured for:", allowedOrigins);
+
   return cors({
     origin: (origin, callback) => {
+      console.log("🌍 Incoming CORS request from origin:", origin);
+
       if (!origin) return callback(null, true);
+
       if (allowedOrigins.includes(origin)) {
+        console.log("✅ Origin allowed:", origin);
         callback(null, true);
       } else {
-        console.warn(`🚫 Blocked by CORS: ${origin}`);
+        console.warn(`🚫 CORS blocked origin: ${origin}`);
         callback(new Error("Not allowed by CORS"));
       }
     },
