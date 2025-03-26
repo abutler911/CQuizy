@@ -5,10 +5,12 @@ export const configureCORS = () => {
   const allowedOrigins = [
     "https://cquizy.com",
     "https://www.cquizy.com",
-    "http://localhost:5173",
-    "http://localhost:3000",
     "https://cquizy-client.netlify.app",
   ];
+
+  if (isDev) {
+    allowedOrigins.push("https://localhost:5173");
+  }
 
   return cors({
     origin: (origin, callback) => {
