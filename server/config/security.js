@@ -3,6 +3,7 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import csrf from "csurf";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 import environment from "./environment.js";
 
 export const setupSecurity = (app) => {
@@ -12,10 +13,19 @@ export const setupSecurity = (app) => {
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
-      // Check if the origin is in the allowed list
-      if (environment.allowedOrigins.indexOf(origin) !== -1) {
+      // Normalize origins by removing protocol and www
+      const normalizedOrigins = environment.allowedOrigins.map((url) =>
+        url.replace(/^https?:\/\//, "").replace(/^www\./, "")
+      );
+
+      const normalizedRequestOrigin = origin
+        .replace(/^https?:\/\//, "")
+        .replace(/^www\./, "");
+
+      if (normalizedOrigins.includes(normalizedRequestOrigin)) {
         callback(null, true);
       } else {
+        console.warn(`CORS blocked for origin: ${origin}`);
         callback(new Error("Not allowed by CORS"));
       }
     },
@@ -38,17 +48,23 @@ export const setupSecurity = (app) => {
   // Cookie parser
   app.use(cookieParser(environment.cookieSecret));
 
-  // Session configuration
+  // Session configuration with MongoDB store
   app.use(
     session({
       secret: environment.sessionSecret,
       resave: false,
       saveUninitialized: false,
+      store: MongoStore.create({
+        mongoUrl: environment.mongoUri,
+        collectionName: "sessions",
+        autoRemove: "interval",
+        autoRemoveInterval: 10, // Clear expired sessions every 10 minutes
+      }),
       cookie: {
         secure: environment.isProduction,
         httpOnly: true,
         sameSite: environment.isProduction ? "strict" : "lax",
-        maxAge: 24 * 60 * 60 * 1000,
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
       },
     })
   );
@@ -64,7 +80,9 @@ export const setupSecurity = (app) => {
           imgSrc: ["'self'", "data:"],
           connectSrc: [
             "'self'",
-            ...environment.allowedOrigins, // Dynamically add allowed origins
+            ...environment.allowedOrigins.map((origin) =>
+              origin.startsWith("http") ? origin : `https://${origin}`
+            ),
           ],
           fontSrc: ["'self'"],
           objectSrc: ["'none'"],
