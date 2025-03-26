@@ -69,7 +69,7 @@ export const fetchFromAPI = async (endpoint, options = {}) => {
 export const questionService = {
   // Get all questions (use public endpoint)
   getAllQuestions: async (category = null) => {
-    let endpoint = "/questions/public";
+    let endpoint = "/questions";
     if (category) {
       endpoint += `?category=${encodeURIComponent(category)}`;
     }
@@ -78,7 +78,7 @@ export const questionService = {
 
   // Get a single question by ID (use public endpoint)
   getQuestionById: async (id) => {
-    return fetchFromAPI(`/questions/public/${id}`);
+    return fetchFromAPI(`/questions/${id}`);
   },
 
   // Create a new question (protected route)
