@@ -3,11 +3,12 @@ import environment from "./environment.js";
 
 export const configureCORS = () => {
   const isDev = environment.nodeEnv !== "production";
+  console.log("🌍 NODE_ENV:", environment.nodeEnv, "| isDev:", isDev);
 
   const allowedOrigins = [
     "https://cquizy.com",
     "https://www.cquizy.com",
-    "https://cquizy.netlify.app",
+    "https://cquizy-client.netlify.app",
   ];
 
   if (isDev) {
@@ -22,9 +23,7 @@ export const configureCORS = () => {
 
       if (!origin) return callback(null, true);
 
-      const isAllowed = allowedOrigins.some((allowed) => origin === allowed);
-
-      if (isAllowed) {
+      if (allowedOrigins.includes(origin)) {
         console.log("✅ Origin allowed:", origin);
         callback(null, true);
       } else {
