@@ -1,8 +1,13 @@
 // src/services/api.js
 // Use environment variable for API URL with fallback
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
+if (!API_BASE_URL) {
+  console.error(
+    "❌ VITE_API_URL is not defined! Make sure it's set in your environment variables."
+  );
+  throw new Error("Missing VITE_API_URL environment variable");
+}
 /**
  * Fetch data from the API
  * @param {string} endpoint - API endpoint
