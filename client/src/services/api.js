@@ -17,7 +17,6 @@ export const fetchFromAPI = async (endpoint, options = {}) => {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        // Optional: Add an Accept header to specify expected response type
         Accept: "application/json",
       },
     };
@@ -59,7 +58,6 @@ export const fetchFromAPI = async (endpoint, options = {}) => {
     return await response.json();
   } catch (error) {
     console.error(`API Error (${endpoint}):`, error);
-
     // Re-throw the error for the caller to handle
     throw error;
   }
@@ -69,21 +67,21 @@ export const fetchFromAPI = async (endpoint, options = {}) => {
  * Question-related API functions
  */
 export const questionService = {
-  // Get all questions
+  // Get all questions (use public endpoint)
   getAllQuestions: async (category = null) => {
-    let endpoint = "/questions";
+    let endpoint = "/questions/public";
     if (category) {
       endpoint += `?category=${encodeURIComponent(category)}`;
     }
     return fetchFromAPI(endpoint);
   },
 
-  // Get a single question by ID
+  // Get a single question by ID (use public endpoint)
   getQuestionById: async (id) => {
-    return fetchFromAPI(`/questions/${id}`);
+    return fetchFromAPI(`/questions/public/${id}`);
   },
 
-  // Create a new question
+  // Create a new question (protected route)
   createQuestion: async (questionData) => {
     return fetchFromAPI("/questions", {
       method: "POST",
@@ -91,7 +89,7 @@ export const questionService = {
     });
   },
 
-  // Update a question
+  // Update a question (protected route)
   updateQuestion: async (id, questionData) => {
     return fetchFromAPI(`/questions/${id}`, {
       method: "PUT",
@@ -99,10 +97,17 @@ export const questionService = {
     });
   },
 
-  // Delete a question
+  // Delete a question (protected route)
   deleteQuestion: async (id) => {
     return fetchFromAPI(`/questions/${id}`, {
       method: "DELETE",
     });
   },
+};
+
+// Add a method to get CSRF token
+export const getCsrfToken = async () => {
+  return fetchFromAPI("/csrf-token", {
+    method: "GET",
+  });
 };
