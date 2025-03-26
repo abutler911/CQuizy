@@ -12,6 +12,8 @@ const PORT = environment.port;
 connectDB();
 
 const server = app.listen(PORT, () => {
+  console.log("🌍 NODE_ENV:", environment.nodeEnv);
+
   console.log(`🚀 CQuizy API is running on http://localhost:${PORT}`);
 });
 
