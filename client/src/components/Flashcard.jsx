@@ -288,9 +288,7 @@ const Flashcard = ({
 
   return (
     <CardContainer>
-      <FlipButton onClick={handleFlip} />
-
-      <CardFront $isActive={!isFlipped}>
+      <CardFront $isActive={!isFlipped} onClick={handleFlip}>
         <CardContent>
           <CardHeader>
             <CategoryTag>{question.category}</CategoryTag>
@@ -329,7 +327,7 @@ const Flashcard = ({
         </CardContent>
       </CardFront>
 
-      <CardBack $isActive={isFlipped}>
+      <CardBack $isActive={isFlipped} onClick={handleFlip}>
         <AnswerText>{question.answer}</AnswerText>
 
         <FlipHint>
