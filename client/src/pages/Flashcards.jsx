@@ -93,22 +93,20 @@ const ControlPanel = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: ${(props) => props.theme.spacing?.xl || "2rem"};
-  gap: ${(props) => props.theme.spacing?.lg || "1.5rem"};
-  flex-wrap: wrap;
 `;
 
-const ControlButton = styled.button`
-  background-color: ${(props) => props.theme.colors?.primary || "#3498db"};
+const ShuffleButton = styled.button`
+  background-color: ${(props) => props.theme.colors?.success || "#2ecc71"};
   color: ${(props) =>
     props.theme.colors?.text === "#333333" &&
-    props.theme.colors?.primary === "#fff"
+    props.theme.colors?.success === "#fff"
       ? "#333"
       : "white"};
   border: none;
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  font-size: ${(props) => props.theme.fontSizes?.md || "1.1rem"};
+  font-size: ${(props) => props.theme.fontSizes?.lg || "1.2rem"};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -121,33 +119,26 @@ const ControlButton = styled.button`
     transform: translateY(-3px);
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
     background-color: ${(props) =>
-      props.theme.colors?.primaryDark || "#2980b9"};
+      props.theme.colors?.successDark || "#27ae60"};
   }
 
   &:active {
     transform: translateY(-1px);
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
   }
-
-  &:disabled {
-    background-color: ${(props) =>
-      props.theme.colors?.text === "#333333" ? "#d0d0d0" : "#95a5a6"};
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-    opacity: 0.7;
-  }
 `;
 
-const ShuffleButton = styled(ControlButton)`
-  background-color: ${(props) => props.theme.colors?.success || "#2ecc71"};
-  width: 60px;
-  height: 60px;
-  font-size: ${(props) => props.theme.fontSizes?.lg || "1.2rem"};
+const SwipeInstructions = styled.div`
+  font-size: ${(props) => props.theme.fontSizes?.sm || "0.9rem"};
+  color: ${(props) => props.theme.colors?.textSecondary || "inherit"};
+  text-align: center;
+  margin-top: ${(props) => props.theme.spacing?.md || "1rem"};
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
-  &:hover {
-    background-color: ${(props) =>
-      props.theme.colors?.successDark || "#27ae60"};
+  i {
+    font-size: 0.8rem;
   }
 `;
 
@@ -204,6 +195,7 @@ const Flashcards = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showSwipeGuide, setShowSwipeGuide] = useState(true);
 
   useEffect(() => {
     const initializeApp = async () => {
@@ -225,6 +217,13 @@ const Flashcards = () => {
     };
     initializeApp();
   }, []);
+
+  // Hide swipe guide after first card transition
+  useEffect(() => {
+    if (currentQuestionIndex > 0) {
+      setShowSwipeGuide(false);
+    }
+  }, [currentQuestionIndex]);
 
   const getFromStorage = (key, defaultValue = null) => {
     try {
@@ -318,35 +317,33 @@ const Flashcards = () => {
         ) : questions.length === 0 ? (
           <AlertBox $type="info">No questions found</AlertBox>
         ) : (
-          <Flashcard
-            question={questions[currentQuestionIndex]}
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-            onBookmark={handleToggleBookmark}
-            isBookmarked={bookmarkedQuestions.includes(
-              questions[currentQuestionIndex]._id
+          <>
+            <Flashcard
+              question={questions[currentQuestionIndex]}
+              onNext={handleNext}
+              onPrevious={handlePrevious}
+              onBookmark={handleToggleBookmark}
+              isBookmarked={bookmarkedQuestions.includes(
+                questions[currentQuestionIndex]._id
+              )}
+              currentIndex={currentQuestionIndex}
+              totalQuestions={questions.length}
+            />
+
+            {showSwipeGuide && (
+              <SwipeInstructions>
+                <i className="fas fa-arrow-left"></i>
+                Swipe cards to navigate
+                <i className="fas fa-arrow-right"></i>
+              </SwipeInstructions>
             )}
-            currentIndex={currentQuestionIndex}
-            totalQuestions={questions.length}
-          />
+          </>
         )}
 
         <ControlPanel>
-          <ControlButton
-            onClick={handlePrevious}
-            disabled={currentQuestionIndex === 0}
-          >
-            <i className="fas fa-chevron-left"></i>
-          </ControlButton>
           <ShuffleButton onClick={handleShuffle}>
             <i className="fas fa-random"></i>
           </ShuffleButton>
-          <ControlButton
-            onClick={handleNext}
-            disabled={currentQuestionIndex === questions.length - 1}
-          >
-            <i className="fas fa-chevron-right"></i>
-          </ControlButton>
         </ControlPanel>
       </Container>
     </>

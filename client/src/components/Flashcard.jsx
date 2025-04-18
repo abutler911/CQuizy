@@ -1,5 +1,5 @@
 // src/components/Flashcard.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 // Modern card container with optimized dimensions
@@ -10,6 +10,7 @@ const CardContainer = styled.div`
   height: 360px;
   position: relative;
   perspective: 1500px;
+  touch-action: pan-y; /* Allow vertical scrolling but capture horizontal swipes */
 `;
 
 // Base card face with shared properties and improved 3D transitions
@@ -28,10 +29,15 @@ const CardFace = styled.div`
     props.$isActive
       ? "0 20px 30px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.1)"
       : "0 10px 20px rgba(0, 0, 0, 0.1)"};
-  transform: ${(props) => (props.$isActive ? "rotateY(0)" : "rotateY(180deg)")};
+  transform: ${(props) =>
+    props.$isActive
+      ? `rotateY(0) translateX(${props.$swipeOffset || 0}px)`
+      : "rotateY(180deg)"};
   transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.38, 0.02, 0.09, 1.66),
-    box-shadow 0.3s ease;
+  transition: ${(props) =>
+    props.$swiping
+      ? "transform 0.05s linear"
+      : "transform 0.6s cubic-bezier(0.38, 0.02, 0.09, 1.66), box-shadow 0.3s ease"};
   pointer-events: ${(props) => (props.$isActive ? "auto" : "none")};
 `;
 
@@ -264,7 +270,31 @@ const FlipHint = styled.div`
   }
 `;
 
-// Progress bar removed since it's redundant with app header
+// Edge swipe indicators for visual feedback
+const SwipeIndicator = styled.div`
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 60px;
+  z-index: 3;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 2rem;
+  background: ${(props) =>
+    props.$direction === "left"
+      ? "linear-gradient(to left, transparent, rgba(52, 152, 219, 0.3))"
+      : "linear-gradient(to right, transparent, rgba(52, 152, 219, 0.3))"};
+  ${(props) => (props.$direction === "left" ? "left: 0;" : "right: 0;")}
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+
+  /* Show based on swipe direction and strength */
+  opacity: ${(props) =>
+    props.$active ? Math.min(Math.abs(props.$strength) / 100, 0.8) : 0};
+`;
 
 const Flashcard = ({
   question,
@@ -276,9 +306,21 @@ const Flashcard = ({
   totalQuestions,
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const [swipeOffset, setSwipeOffset] = useState(0);
+  const [isSwiping, setIsSwiping] = useState(false);
+  const touchStartXRef = useRef(0);
+  const touchStartTimeRef = useRef(0);
+  const cardRef = useRef(null);
 
-  const handleFlip = () => {
-    setIsFlipped(!isFlipped);
+  // Swipe sensitivity - adjust these values to make swiping easier or harder
+  const SWIPE_THRESHOLD = 80; // Minimum distance to trigger a swipe (in pixels)
+  const SWIPE_VELOCITY_THRESHOLD = 0.3; // Minimum velocity to trigger a swipe (pixels/ms)
+
+  const handleFlip = (e) => {
+    // Only flip if we're not in the middle of a swipe
+    if (Math.abs(swipeOffset) < 20) {
+      setIsFlipped(!isFlipped);
+    }
   };
 
   // Reset flip state when the question changes
@@ -286,6 +328,7 @@ const Flashcard = ({
     setIsFlipped(false);
   }, [currentIndex]);
 
+  // Handle keyboard shortcuts
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (["INPUT", "TEXTAREA", "SELECT"].includes(event.target.tagName))
@@ -313,9 +356,100 @@ const Flashcard = ({
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, [onNext, onPrevious, onBookmark]);
 
+  // Touch handlers for swipe gestures
+  const handleTouchStart = (e) => {
+    // Skip swipe on flipped card
+    if (isFlipped) return;
+
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartTimeRef.current = Date.now();
+    setIsSwiping(true);
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isSwiping || isFlipped) return;
+
+    const touchX = e.touches[0].clientX;
+    const deltaX = touchX - touchStartXRef.current;
+
+    // Limit the maximum swipe offset and add resistance as the card moves farther
+    const resistanceFactor = 0.7;
+    const clampedDelta =
+      Math.sign(deltaX) * Math.min(Math.abs(deltaX) * resistanceFactor, 150);
+
+    // Disable the swipe in a direction if we can't navigate that way
+    if (
+      (currentIndex === 0 && deltaX > 0) ||
+      (currentIndex === totalQuestions - 1 && deltaX < 0)
+    ) {
+      // Stronger resistance when at the edges
+      setSwipeOffset(deltaX * 0.2);
+    } else {
+      setSwipeOffset(clampedDelta);
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!isSwiping || isFlipped) {
+      setIsSwiping(false);
+      return;
+    }
+
+    const touchEndTime = Date.now();
+    const touchDuration = touchEndTime - touchStartTimeRef.current;
+    const velocity = Math.abs(swipeOffset) / touchDuration; // pixels per ms
+
+    // Check if the swipe was strong enough or moved far enough
+    if (
+      Math.abs(swipeOffset) > SWIPE_THRESHOLD ||
+      velocity > SWIPE_VELOCITY_THRESHOLD
+    ) {
+      // Swipe right - go to previous card
+      if (swipeOffset > 0 && currentIndex > 0) {
+        onPrevious();
+      }
+      // Swipe left - go to next card
+      else if (swipeOffset < 0 && currentIndex < totalQuestions - 1) {
+        onNext();
+      }
+    }
+
+    // Reset swipe state
+    setSwipeOffset(0);
+    setIsSwiping(false);
+  };
+
   return (
-    <CardContainer>
-      <CardFront $isActive={!isFlipped} onClick={handleFlip}>
+    <CardContainer
+      ref={cardRef}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Left swipe indicator */}
+      <SwipeIndicator
+        $direction="left"
+        $active={swipeOffset < -20}
+        $strength={swipeOffset}
+      >
+        <i className="fas fa-chevron-right" />
+      </SwipeIndicator>
+
+      {/* Right swipe indicator */}
+      <SwipeIndicator
+        $direction="right"
+        $active={swipeOffset > 20}
+        $strength={swipeOffset}
+      >
+        <i className="fas fa-chevron-left" />
+      </SwipeIndicator>
+
+      <CardFront
+        $isActive={!isFlipped}
+        $swipeOffset={swipeOffset}
+        $swiping={isSwiping}
+        onClick={handleFlip}
+      >
         <CardContent>
           <CardHeader>
             <CardMeta>
@@ -343,7 +477,7 @@ const Flashcard = ({
           <QuestionText>{question.question}</QuestionText>
 
           <CardFooter>
-            {/* Navigation controls and counter removed */}
+            {/* Navigation controls removed in favor of swipe */}
           </CardFooter>
 
           <FlipHint>
