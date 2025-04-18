@@ -1,378 +1,452 @@
-// src/components/Flashcard.jsx
-import React, { useState, useEffect } from "react";
+// src/pages/Limitations.jsx
+import React, { useState } from "react";
 import styled from "styled-components";
+import Header from "../components/Header";
+import Navigation from "../components/Navigation";
 
-// Modern card container with optimized dimensions
-const CardContainer = styled.div`
-  margin: 2rem auto;
-  max-width: 480px;
-  width: 94%;
-  height: 360px;
-  position: relative;
-  perspective: 1500px;
+// Styled components
+const Container = styled.div`
+  max-width: 800px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 0 1rem;
 `;
 
-// Base card face with shared properties and improved 3D transitions
-const CardFace = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 16px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  backface-visibility: hidden;
-  box-shadow: ${(props) =>
-    props.$isActive
-      ? "0 20px 30px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.1)"
-      : "0 10px 20px rgba(0, 0, 0, 0.1)"};
-  transform: ${(props) => (props.$isActive ? "rotateY(0)" : "rotateY(180deg)")};
-  transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.38, 0.02, 0.09, 1.66),
-    box-shadow 0.3s ease;
-  pointer-events: ${(props) => (props.$isActive ? "auto" : "none")};
-`;
-
-// Front card with refined gradient
-const CardFront = styled(CardFace)`
-  background: linear-gradient(135deg, #2c3e50, #1a2a38);
+const PageTitle = styled.h3`
   color: white;
-  justify-content: space-between;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 70px;
-    background: linear-gradient(
-      to bottom,
-      rgba(52, 152, 219, 0.12),
-      transparent
-    );
-    z-index: 0;
-  }
-`;
-
-// Back card with contrast gradient
-const CardBack = styled(CardFace)`
-  background: linear-gradient(135deg, #263545, #34495e);
-  color: white;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-
-  &::before {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 80px;
-    background: linear-gradient(to top, rgba(52, 152, 219, 0.15), transparent);
-    z-index: 0;
-  }
-`;
-
-// Optimized content area with compact padding
-const CardContent = styled.div`
-  padding: 1.5rem;
-  position: relative;
-  z-index: 1;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-`;
-
-// Compact header with metadata combined
-const CardHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 0.5rem;
-`;
-
-// Combined metadata block with category and context
-const CardMeta = styled.div`
-  max-width: 80%;
-`;
-
-// Minimal category block
-const CategoryBlock = styled.div`
-  background: rgba(52, 152, 219, 0.7);
-  color: white;
-  padding: 0.3rem 0.5rem;
-  border-radius: 4px;
-  display: inline-flex;
-  flex-direction: column;
-  font-size: 0.65rem;
-  max-width: 200px;
-`;
-
-// Category title - extremely compact
-const CategoryTitle = styled.div`
+  text-align: center;
+  margin: 1.5rem 0;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  line-height: 1.1;
+  font-size: 1.5rem;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: ${(props) => props.theme.colors.primary || "#3498db"};
+    border-radius: 2px;
+  }
 `;
 
-// Category context - small and subtle
-const CategoryContext = styled.div`
-  font-size: 0.6rem;
-  font-style: italic;
-  opacity: 0.85;
-  line-height: 1.1;
-  white-space: nowrap;
+const AccordionContainer = styled.div`
+  margin-bottom: 2rem;
+`;
+
+const AccordionItem = styled.div`
+  margin-bottom: 0.75rem;
+  border-radius: 10px;
   overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-// Efficient bookmark button
-const BookmarkButton = styled.button`
-  background: none;
-  border: none;
-  color: ${(props) => (props.$active ? "#ff6b6b" : "rgba(255, 255, 255, 0.6)")};
-  font-size: 1.25rem;
-  padding: 0.3rem;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: rgba(255, 255, 255, 0.05);
+  transition: box-shadow 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
   &:hover {
-    color: ${(props) =>
-      props.$active ? "#ff8787" : "rgba(255, 255, 255, 0.9)"};
-    transform: scale(1.15)
-      rotate(${(props) => (props.$active ? "0deg" : "10deg")});
-  }
-
-  &:active {
-    transform: scale(0.95);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
   }
 `;
 
-// Minimal divider
-const Divider = styled.hr`
+const AccordionHeader = styled.div`
+  cursor: pointer;
+  user-select: none;
+`;
+
+const AccordionButton = styled.button`
+  width: 100%;
+  padding: 1rem 1.5rem;
+  text-align: left;
+  background: ${(props) =>
+    props.$active ? props.theme.colors.primary || "#3498db" : "#2c3e50"};
+  color: white;
   border: none;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.1);
-  margin: 0.7rem 0;
-`;
-
-// Streamlined question text with better sizing
-const QuestionText = styled.div`
-  font-size: 1.3rem;
-  font-weight: 500;
-  color: white;
-  line-height: 1.5;
-  margin: 0.75rem 0;
-  flex-grow: 1;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   position: relative;
-  z-index: 1;
-  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
-  overflow-y: auto;
-  padding-right: 0.5rem;
+  transition: background 0.3s ease;
 
-  /* Scrollbar styling */
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-  }
-`;
-
-// Refined answer text
-const AnswerText = styled.div`
-  font-size: 1.3rem;
-  color: white;
-  font-weight: 500;
-  text-align: center;
-  line-height: 1.5;
-  position: relative;
-  z-index: 1;
-  max-width: 94%;
-  max-height: 80%;
-  overflow-y: auto;
-  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
-
-  /* Scrollbar styling */
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-  }
-
-  &::before,
   &::after {
-    content: '"';
-    display: inline;
-    color: rgba(52, 152, 219, 0.4);
-    font-size: 1.5em;
-    line-height: 0;
-    vertical-align: -0.3em;
-    margin: 0 0.1em;
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid white;
+    border-bottom: 2px solid white;
+    transform: ${(props) =>
+      props.$active ? "rotate(-135deg)" : "rotate(45deg)"};
+    transition: transform 0.3s ease;
+    margin-left: 1rem;
+  }
+
+  &:hover {
+    background: ${(props) =>
+      props.$active
+        ? props.theme.colors.primaryDark || "#2980b9"
+        : "rgba(52, 152, 219, 0.3)"};
   }
 `;
 
-// Compact footer - without question counter or navigation
-const CardFooter = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-top: auto;
-  padding-top: 0.5rem;
+const AccordionContent = styled.div`
+  max-height: ${(props) => (props.$active ? "2000px" : "0")};
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+  background: #34495e;
 `;
 
-// Subtle flip hint
-const FlipHint = styled.div`
-  position: absolute;
-  bottom: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 0.7rem;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 0.25rem 0.5rem;
-  border-radius: 10px;
-  background: rgba(0, 0, 0, 0.15);
+const AccordionBody = styled.div`
+  padding: ${(props) => (props.$active ? "1.25rem" : "0 1.25rem")};
+  transition: padding 0.3s ease;
+`;
 
-  i {
-    font-size: 0.7rem;
-    animation: pulse 1.5s infinite ease-in-out;
+const TableResponsive = styled.div`
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+`;
+
+const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.9);
+`;
+
+const TableHead = styled.thead`
+  background-color: rgba(52, 152, 219, 0.2);
+
+  th {
+    padding: 0.75rem;
+    text-align: center;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
+`;
 
-  @keyframes pulse {
-    0%,
-    100% {
-      opacity: 0.5;
-      transform: scale(1);
+const TableBody = styled.tbody`
+  tr {
+    &:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.05);
     }
-    50% {
-      opacity: 1;
-      transform: scale(1.1);
+
+    &:hover {
+      background-color: rgba(52, 152, 219, 0.1);
     }
+  }
+
+  td {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
   }
 `;
 
-// Progress bar removed since it's redundant with app header
+const VSpeed = styled.span`
+  font-weight: 600;
+  font-style: italic;
+  color: ${(props) => props.theme.colors.primary || "#3498db"};
+  margin-right: 1px;
+`;
 
-const Flashcard = ({
-  question,
-  onNext,
-  onPrevious,
-  onBookmark,
-  isBookmarked,
-  currentIndex,
-  totalQuestions,
-}) => {
-  const [isFlipped, setIsFlipped] = useState(false);
+const Limitations = () => {
+  // State to track active accordion panel
+  const [activePanel, setActivePanel] = useState("collapseOne");
 
-  const handleFlip = () => {
-    setIsFlipped(!isFlipped);
+  const togglePanel = (panelId) => {
+    setActivePanel(activePanel === panelId ? null : panelId);
   };
 
-  // Reset flip state when the question changes
-  useEffect(() => {
-    setIsFlipped(false);
-  }, [currentIndex]);
+  // Data for the tables
+  const structuralLimitations = {
+    headers: ["Structure", "ERJ 175LL", "ERJ 175LR"],
+    rows: [
+      ["Maximum Ramp Weight", "85,450 lbs", "85,870 lbs"],
+      ["Maximum Takeoff Weight", "85,098 lbs", "85,517 lbs"],
+      ["Maximum Landing Weight", "74,957 lbs", "74,957 lbs"],
+      ["Maximum Zero Fuel Weight", "69,467 lbs", "69,886 lbs"],
+    ],
+  };
 
-  useEffect(() => {
-    const handleKeyPress = (event) => {
-      if (["INPUT", "TEXTAREA", "SELECT"].includes(event.target.tagName))
-        return;
+  const externalDimensions = {
+    headers: ["Structure", "Dimensions"],
+    rows: [
+      ["Wing Span", "93ft 11in"],
+      ["Aircraft Length", "103ft 11in"],
+      ["Tail Height", "32ft 4in"],
+    ],
+  };
 
-      switch (event.key) {
-        case "ArrowLeft":
-          onPrevious();
-          break;
-        case "ArrowRight":
-          onNext();
-          break;
-        case " ":
-          event.preventDefault();
-          handleFlip();
-          break;
-        case "b":
-        case "B":
-          onBookmark();
-          break;
-      }
-    };
+  const altitudeTemperature = {
+    headers: ["Condition", "Limitations"],
+    rows: [
+      ["Max. Ops. Alt", "41,000ft"],
+      ["Max. T/O & Landing Alt", "10,000ft"],
+      ["Max. Temp. T/O & Landing", "ISA +35C (52C)"],
+      ["Min. Temp. T/O & Landing", "-40C"],
+      ["Rwy Slope", "+/- 2%"],
+      ["Max. Tailwind", "15kts"],
+      ["Max. Single Pack Ops", "31,000ft"],
+    ],
+  };
 
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [onNext, onPrevious, onBookmark]);
+  const speedLimits = {
+    headers: ["Designator", "Speed"],
+    rows: [
+      [
+        <>
+          V<sub>mo</sub> SL-8000'
+        </>,
+        "300",
+      ],
+      [
+        <>
+          V<sub>mo</sub> 10,000 - Mach Trans
+        </>,
+        "320",
+      ],
+      [
+        <>
+          M<sub>mo</sub>
+        </>,
+        "0.82",
+      ],
+      [
+        <>
+          V<sub>a</sub>
+        </>,
+        "240",
+      ],
+      [
+        <>
+          V<sub>lo</sub> Ext
+        </>,
+        "250",
+      ],
+      [
+        <>
+          V<sub>le</sub> Ret
+        </>,
+        "250",
+      ],
+      [
+        <>
+          V<sub>le</sub>
+        </>,
+        "250",
+      ],
+      [
+        <>
+          V<sub>tire</sub>
+        </>,
+        "195",
+      ],
+      [
+        <>
+          V<sub>ratDeployMax</sub>
+        </>,
+        <>
+          V<sub>mo</sub>/M<sub>mo</sub>
+        </>,
+      ],
+      [
+        <>
+          V<sub>min</sub> (to provide elec power)
+        </>,
+        "130",
+      ],
+      [
+        <>
+          V<sub>b</sub> (below 10,000ft)
+        </>,
+        "250",
+      ],
+      [
+        <>
+          V<sub>b</sub> (10,000ft and above)
+        </>,
+        "270/0.76M (whichever is lower)",
+      ],
+      [
+        <>
+          V<sub>wiper ops max</sub>
+        </>,
+        "250 (SW)",
+      ],
+      [
+        <>
+          V<sub>window</sub>
+        </>,
+        "160",
+      ],
+    ],
+  };
 
   return (
-    <CardContainer>
-      <CardFront $isActive={!isFlipped} onClick={handleFlip}>
-        <CardContent>
-          <CardHeader>
-            <CardMeta>
-              <CategoryBlock>
-                <CategoryTitle>{question.category}</CategoryTitle>
-                {question.context && (
-                  <CategoryContext>{question.context}</CategoryContext>
-                )}
-              </CategoryBlock>
-            </CardMeta>
+    <>
+      <Header title="Limitations" />
+      <Container>
+        <Navigation />
 
-            <BookmarkButton
-              $active={isBookmarked}
-              onClick={(e) => {
-                e.stopPropagation();
-                onBookmark();
-              }}
-            >
-              <i className="fas fa-bookmark" />
-            </BookmarkButton>
-          </CardHeader>
+        <PageTitle>Aircraft Limitations</PageTitle>
 
-          <Divider />
+        <AccordionContainer>
+          {/* Structural Limitations */}
+          <AccordionItem>
+            <AccordionHeader>
+              <AccordionButton
+                $active={activePanel === "collapseOne"}
+                onClick={() => togglePanel("collapseOne")}
+              >
+                Aircraft Structural Limitations
+              </AccordionButton>
+            </AccordionHeader>
 
-          <QuestionText>{question.question}</QuestionText>
+            <AccordionContent $active={activePanel === "collapseOne"}>
+              <AccordionBody $active={activePanel === "collapseOne"}>
+                <TableResponsive>
+                  <Table>
+                    <TableHead>
+                      <tr>
+                        {structuralLimitations.headers.map((header, index) => (
+                          <th key={index}>{header}</th>
+                        ))}
+                      </tr>
+                    </TableHead>
+                    <TableBody>
+                      {structuralLimitations.rows.map((row, rowIndex) => (
+                        <tr key={rowIndex}>
+                          {row.map((cell, cellIndex) => (
+                            <td key={cellIndex}>{cell}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableResponsive>
+              </AccordionBody>
+            </AccordionContent>
+          </AccordionItem>
 
-          <CardFooter>
-            {/* Navigation controls and counter removed */}
-          </CardFooter>
+          {/* External Dimensions */}
+          <AccordionItem>
+            <AccordionHeader>
+              <AccordionButton
+                $active={activePanel === "collapseTwo"}
+                onClick={() => togglePanel("collapseTwo")}
+              >
+                Structural External Dimensions
+              </AccordionButton>
+            </AccordionHeader>
 
-          <FlipHint>
-            <i className="fas fa-sync-alt"></i>
-            Tap for answer
-          </FlipHint>
-        </CardContent>
-      </CardFront>
+            <AccordionContent $active={activePanel === "collapseTwo"}>
+              <AccordionBody $active={activePanel === "collapseTwo"}>
+                <TableResponsive>
+                  <Table>
+                    <TableHead>
+                      <tr>
+                        {externalDimensions.headers.map((header, index) => (
+                          <th key={index}>{header}</th>
+                        ))}
+                      </tr>
+                    </TableHead>
+                    <TableBody>
+                      {externalDimensions.rows.map((row, rowIndex) => (
+                        <tr key={rowIndex}>
+                          {row.map((cell, cellIndex) => (
+                            <td key={cellIndex}>{cell}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableResponsive>
+              </AccordionBody>
+            </AccordionContent>
+          </AccordionItem>
 
-      <CardBack $isActive={isFlipped} onClick={handleFlip}>
-        <AnswerText>{question.answer}</AnswerText>
+          {/* Maximum Altitude and Temperature */}
+          <AccordionItem>
+            <AccordionHeader>
+              <AccordionButton
+                $active={activePanel === "collapseThree"}
+                onClick={() => togglePanel("collapseThree")}
+              >
+                Maximum Altitude and Temperature Limits
+              </AccordionButton>
+            </AccordionHeader>
 
-        <FlipHint>
-          <i className="fas fa-sync-alt"></i>
-          Tap to return
-        </FlipHint>
-      </CardBack>
-    </CardContainer>
+            <AccordionContent $active={activePanel === "collapseThree"}>
+              <AccordionBody $active={activePanel === "collapseThree"}>
+                <TableResponsive>
+                  <Table>
+                    <TableHead>
+                      <tr>
+                        {altitudeTemperature.headers.map((header, index) => (
+                          <th key={index}>{header}</th>
+                        ))}
+                      </tr>
+                    </TableHead>
+                    <TableBody>
+                      {altitudeTemperature.rows.map((row, rowIndex) => (
+                        <tr key={rowIndex}>
+                          {row.map((cell, cellIndex) => (
+                            <td key={cellIndex}>{cell}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableResponsive>
+              </AccordionBody>
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* Speed Limits */}
+          <AccordionItem>
+            <AccordionHeader>
+              <AccordionButton
+                $active={activePanel === "collapseFour"}
+                onClick={() => togglePanel("collapseFour")}
+              >
+                Speed Limits
+              </AccordionButton>
+            </AccordionHeader>
+
+            <AccordionContent $active={activePanel === "collapseFour"}>
+              <AccordionBody $active={activePanel === "collapseFour"}>
+                <TableResponsive>
+                  <Table>
+                    <TableHead>
+                      <tr>
+                        {speedLimits.headers.map((header, index) => (
+                          <th key={index}>{header}</th>
+                        ))}
+                      </tr>
+                    </TableHead>
+                    <TableBody>
+                      {speedLimits.rows.map((row, rowIndex) => (
+                        <tr key={rowIndex}>
+                          {row.map((cell, cellIndex) => (
+                            <td key={cellIndex}>{cell}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableResponsive>
+              </AccordionBody>
+            </AccordionContent>
+          </AccordionItem>
+        </AccordionContainer>
+      </Container>
+    </>
   );
 };
 
-export default Flashcard;
+export default Limitations;

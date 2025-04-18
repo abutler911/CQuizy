@@ -95,7 +95,6 @@ const CardHeader = styled.div`
   margin-bottom: 0.5rem;
 `;
 
-// Streamlined metadata area
 // Combined metadata block with category and context
 const CardMeta = styled.div`
   max-width: 80%;
@@ -284,11 +283,8 @@ const Flashcard = ({
   onBookmark,
   isBookmarked,
   currentIndex,
-  totalQuestions,
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const isFirst = currentIndex === 0;
-  const isLast = currentIndex === totalQuestions - 1;
 
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
@@ -306,10 +302,10 @@ const Flashcard = ({
 
       switch (event.key) {
         case "ArrowLeft":
-          if (!isFirst) onPrevious();
+          onPrevious();
           break;
         case "ArrowRight":
-          if (!isLast) onNext();
+          onNext();
           break;
         case " ":
           event.preventDefault();
@@ -324,7 +320,7 @@ const Flashcard = ({
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [onNext, onPrevious, onBookmark, isFirst, isLast]);
+  }, [onNext, onPrevious, onBookmark]);
 
   return (
     <CardContainer>
@@ -356,31 +352,7 @@ const Flashcard = ({
           <QuestionText>{question.question}</QuestionText>
 
           <CardFooter>
-            <QuestionCounter>
-              {currentIndex + 1} / {totalQuestions}
-            </QuestionCounter>
-
-            <NavControls>
-              <NavButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onPrevious();
-                }}
-                disabled={isFirst}
-              >
-                <i className="fas fa-chevron-left" />
-              </NavButton>
-
-              <NavButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onNext();
-                }}
-                disabled={isLast}
-              >
-                <i className="fas fa-chevron-right" />
-              </NavButton>
-            </NavControls>
+            {/* Navigation controls and counter removed */}
           </CardFooter>
 
           <FlipHint>
