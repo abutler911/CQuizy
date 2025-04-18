@@ -10,7 +10,8 @@ const CardContainer = styled.div`
   height: 360px;
   position: relative;
   perspective: 1500px;
-  touch-action: pan-y; /* Allow vertical scrolling but capture horizontal swipes */
+  overflow: hidden; /* Keep the animation contained */
+  touch-action: none; /* Prevent browser handling of all gestures */
 `;
 
 // Base card face with shared properties and improved 3D transitions
@@ -29,15 +30,22 @@ const CardFace = styled.div`
     props.$isActive
       ? "0 20px 30px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.1)"
       : "0 10px 20px rgba(0, 0, 0, 0.1)"};
-  transform: ${(props) =>
-    props.$isActive
-      ? `rotateY(0) translateX(${props.$swipeOffset || 0}px)`
-      : "rotateY(180deg)"};
+  transform: ${(props) => {
+    if (!props.$isActive) return "rotateY(180deg)";
+
+    // Handle exit animations
+    if (props.$exiting === "left") return "translateX(-120%)";
+    if (props.$exiting === "right") return "translateX(120%)";
+
+    // Normal state with optional swipe offset
+    return `rotateY(0) translateX(${props.$swipeOffset || 0}px)`;
+  }};
   transform-style: preserve-3d;
-  transition: ${(props) =>
-    props.$swiping
-      ? "transform 0.05s linear"
-      : "transform 0.6s cubic-bezier(0.38, 0.02, 0.09, 1.66), box-shadow 0.3s ease"};
+  transition: ${(props) => {
+    if (props.$exiting) return "transform 0.3s ease-out";
+    if (props.$swiping) return "transform 0.05s linear";
+    return "transform 0.6s cubic-bezier(0.38, 0.02, 0.09, 1.66), box-shadow 0.3s ease";
+  }};
   pointer-events: ${(props) => (props.$isActive ? "auto" : "none")};
 `;
 
@@ -308,9 +316,12 @@ const Flashcard = ({
   const [isFlipped, setIsFlipped] = useState(false);
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false);
+  const [exitDirection, setExitDirection] = useState(null);
   const touchStartXRef = useRef(0);
+  const touchStartYRef = useRef(0); // Track vertical movement to prevent page scrolling
   const touchStartTimeRef = useRef(0);
   const cardRef = useRef(null);
+  const exitingTimerRef = useRef(null);
 
   // Swipe sensitivity - adjust these values to make swiping easier or harder
   const SWIPE_THRESHOLD = 80; // Minimum distance to trigger a swipe (in pixels)
@@ -318,7 +329,7 @@ const Flashcard = ({
 
   const handleFlip = (e) => {
     // Only flip if we're not in the middle of a swipe
-    if (Math.abs(swipeOffset) < 20) {
+    if (Math.abs(swipeOffset) < 20 && !exitDirection) {
       setIsFlipped(!isFlipped);
     }
   };
@@ -326,6 +337,12 @@ const Flashcard = ({
   // Reset flip state when the question changes
   useEffect(() => {
     setIsFlipped(false);
+    setExitDirection(null);
+
+    // Clear any existing exit animation timer
+    if (exitingTimerRef.current) {
+      clearTimeout(exitingTimerRef.current);
+    }
   }, [currentIndex]);
 
   // Handle keyboard shortcuts
@@ -336,10 +353,20 @@ const Flashcard = ({
 
       switch (event.key) {
         case "ArrowLeft":
-          onPrevious();
+          if (currentIndex > 0) {
+            setExitDirection("right");
+            exitingTimerRef.current = setTimeout(() => {
+              onPrevious();
+            }, 300); // Match this with CSS transition time
+          }
           break;
         case "ArrowRight":
-          onNext();
+          if (currentIndex < totalQuestions - 1) {
+            setExitDirection("left");
+            exitingTimerRef.current = setTimeout(() => {
+              onNext();
+            }, 300); // Match this with CSS transition time
+          }
           break;
         case " ":
           event.preventDefault();
@@ -353,24 +380,44 @@ const Flashcard = ({
     };
 
     window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [onNext, onPrevious, onBookmark]);
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+      if (exitingTimerRef.current) {
+        clearTimeout(exitingTimerRef.current);
+      }
+    };
+  }, [onNext, onPrevious, onBookmark, currentIndex, totalQuestions]);
 
   // Touch handlers for swipe gestures
   const handleTouchStart = (e) => {
-    // Skip swipe on flipped card
-    if (isFlipped) return;
+    // Skip swipe on flipped card or during exit animation
+    if (isFlipped || exitDirection) return;
 
     touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
     touchStartTimeRef.current = Date.now();
     setIsSwiping(true);
+
+    // Prevent default to avoid browser handling the touch
+    e.preventDefault();
   };
 
   const handleTouchMove = (e) => {
-    if (!isSwiping || isFlipped) return;
+    if (!isSwiping || isFlipped || exitDirection) return;
 
     const touchX = e.touches[0].clientX;
+    const touchY = e.touches[0].clientY;
     const deltaX = touchX - touchStartXRef.current;
+    const deltaY = touchY - touchStartYRef.current;
+
+    // If the user is scrolling more vertically than horizontally, let the browser handle it
+    if (Math.abs(deltaY) > Math.abs(deltaX) * 1.5) {
+      setIsSwiping(false);
+      return;
+    }
+
+    // Prevent default to stop page scrolling
+    e.preventDefault();
 
     // Limit the maximum swipe offset and add resistance as the card moves farther
     const resistanceFactor = 0.7;
@@ -390,7 +437,7 @@ const Flashcard = ({
   };
 
   const handleTouchEnd = (e) => {
-    if (!isSwiping || isFlipped) {
+    if (!isSwiping || isFlipped || exitDirection) {
       setIsSwiping(false);
       return;
     }
@@ -406,16 +453,26 @@ const Flashcard = ({
     ) {
       // Swipe right - go to previous card
       if (swipeOffset > 0 && currentIndex > 0) {
-        onPrevious();
+        setExitDirection("right");
+        exitingTimerRef.current = setTimeout(() => {
+          onPrevious();
+        }, 300); // Match this with CSS transition time
       }
       // Swipe left - go to next card
       else if (swipeOffset < 0 && currentIndex < totalQuestions - 1) {
-        onNext();
+        setExitDirection("left");
+        exitingTimerRef.current = setTimeout(() => {
+          onNext();
+        }, 300); // Match this with CSS transition time
+      } else {
+        // Reset if swiping is not allowed in this direction
+        setSwipeOffset(0);
       }
+    } else {
+      // Not a strong enough swipe, reset
+      setSwipeOffset(0);
     }
 
-    // Reset swipe state
-    setSwipeOffset(0);
     setIsSwiping(false);
   };
 
@@ -448,6 +505,7 @@ const Flashcard = ({
         $isActive={!isFlipped}
         $swipeOffset={swipeOffset}
         $swiping={isSwiping}
+        $exiting={exitDirection}
         onClick={handleFlip}
       >
         <CardContent>
@@ -487,7 +545,11 @@ const Flashcard = ({
         </CardContent>
       </CardFront>
 
-      <CardBack $isActive={isFlipped} onClick={handleFlip}>
+      <CardBack
+        $isActive={isFlipped}
+        $exiting={exitDirection}
+        onClick={handleFlip}
+      >
         <AnswerText>{question.answer}</AnswerText>
 
         <FlipHint>

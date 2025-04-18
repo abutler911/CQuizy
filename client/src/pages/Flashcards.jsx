@@ -135,10 +135,67 @@ const SwipeInstructions = styled.div`
   margin-top: ${(props) => props.theme.spacing?.md || "1rem"};
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.5rem;
+  border-radius: 20px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 1s ease, pulse 2s infinite;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
 
   i {
     font-size: 0.8rem;
+    animation: arrowSwipe 2s infinite;
+  }
+
+  i.fa-arrow-left {
+    animation: arrowSwipeLeft 2s infinite;
+  }
+
+  i.fa-arrow-right {
+    animation: arrowSwipeRight 2s infinite;
+  }
+
+  @keyframes arrowSwipeLeft {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-5px);
+    }
+  }
+
+  @keyframes arrowSwipeRight {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(5px);
+    }
   }
 `;
 
@@ -220,8 +277,17 @@ const Flashcards = () => {
 
   // Hide swipe guide after first card transition
   useEffect(() => {
+    // Hide the swipe guide after user has swiped to a new card
+    // or after 6 seconds have passed, whichever comes first
     if (currentQuestionIndex > 0) {
       setShowSwipeGuide(false);
+    } else {
+      // Auto-hide the guide after 6 seconds
+      const timer = setTimeout(() => {
+        setShowSwipeGuide(false);
+      }, 6000);
+
+      return () => clearTimeout(timer);
     }
   }, [currentQuestionIndex]);
 
