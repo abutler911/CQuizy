@@ -120,15 +120,16 @@ const CategoryTitle = styled.div`
   line-height: 1.1;
 `;
 
-// Category context - small and subtle
+// Category context - wrap instead of truncate
 const CategoryContext = styled.div`
   font-size: 0.6rem;
   font-style: italic;
   opacity: 0.85;
-  line-height: 1.1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.2;
+  max-width: 200px;
+  white-space: normal; /* Allow wrapping */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 `;
 
 // Efficient bookmark button
@@ -191,7 +192,7 @@ const QuestionText = styled.div`
   }
 `;
 
-// Refined answer text
+// Refined answer text without quotes
 const AnswerText = styled.div`
   font-size: 1.3rem;
   color: white;
@@ -218,17 +219,6 @@ const AnswerText = styled.div`
   &::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.1);
     border-radius: 4px;
-  }
-
-  &::before,
-  &::after {
-    content: '"';
-    display: inline;
-    color: rgba(52, 152, 219, 0.4);
-    font-size: 1.5em;
-    line-height: 0;
-    vertical-align: -0.3em;
-    margin: 0 0.1em;
   }
 `;
 
@@ -283,6 +273,7 @@ const Flashcard = ({
   onBookmark,
   isBookmarked,
   currentIndex,
+  totalQuestions,
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
