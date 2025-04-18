@@ -1,4 +1,4 @@
-// src/components/Header.jsx
+// src/components/Header.jsx - Mobile-optimized version
 import React from "react";
 import styled from "styled-components";
 import { useTheme } from "../contexts/ThemeContext";
@@ -7,7 +7,7 @@ import { useTimer } from "../contexts/TimerContext";
 const HeaderWrapper = styled.div`
   position: relative;
   z-index: 10;
-  margin-bottom: ${(props) => props.theme.spacing?.md || "1rem"};
+  margin-bottom: ${(props) => props.theme.spacing?.xs || "0.5rem"};
 `;
 
 const HeaderContainer = styled.header`
@@ -16,16 +16,17 @@ const HeaderContainer = styled.header`
     props.theme.colors?.text === "#333333"
       ? "white"
       : props.theme.colors?.text || "white"};
-  padding: ${(props) => props.theme.spacing?.md || "1rem"}
-    ${(props) => props.theme.spacing?.xl || "2rem"};
+  padding: ${(props) => props.theme.spacing?.xs || "0.5rem"}
+    ${(props) => props.theme.spacing?.md || "1rem"};
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: ${(props) =>
-    props.theme.colors?.headerShadow || "0 4px 20px rgba(0, 0, 0, 0.15)"};
+    props.theme.colors?.headerShadow || "0 2px 10px rgba(0, 0, 0, 0.15)"};
   position: relative;
   transition: background-color
     ${(props) => props.theme.transitions?.medium || "0.3s ease"};
+  height: 60px; /* Fixed height for consistency */
 `;
 
 const LogoSection = styled.div`
@@ -36,7 +37,7 @@ const LogoSection = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: ${(props) => props.theme.fontSizes?.xxl || "2.2rem"};
+  font-size: ${(props) => props.theme.fontSizes?.lg || "1.5rem"};
   font-weight: 800;
   margin: 0;
   letter-spacing: 1px;
@@ -44,29 +45,29 @@ const Title = styled.h1`
     props.theme.colors?.text === "#333333"
       ? "white"
       : props.theme.colors?.text || "white"};
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 `;
 
 const Subtitle = styled.h2`
-  font-size: ${(props) => props.theme.fontSizes?.md || "1rem"};
+  font-size: ${(props) => props.theme.fontSizes?.xs || "0.75rem"};
   font-weight: 400;
-  margin: 0.15rem 0 0;
+  margin: 0.1rem 0 0;
   color: ${(props) =>
     props.theme.colors?.textSecondary || "rgba(255, 255, 255, 0.9)"};
-  letter-spacing: 0.8px;
+  letter-spacing: 0.5px;
 `;
 
 const Controls = styled.div`
   display: flex;
   align-items: center;
-  gap: ${(props) => props.theme.spacing?.md || "1rem"};
+  gap: ${(props) => props.theme.spacing?.xs || "0.5rem"};
   position: relative;
 `;
 
 const TimerWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: ${(props) => props.theme.spacing?.sm || "0.75rem"};
+  gap: ${(props) => props.theme.spacing?.xs || "0.25rem"};
 `;
 
 const TimerContainer = styled.div`
@@ -76,12 +77,12 @@ const TimerContainer = styled.div`
       : "rgba(255, 255, 255, 0.1)"};
   color: ${(props) =>
     props.theme.colors?.text === "#333333" ? props.theme.colors.text : "white"};
-  padding: 0.5rem 0.8rem;
+  padding: 0.25rem 0.5rem;
   border-radius: ${(props) => props.theme.borderRadius?.pill || "20px"};
-  font-size: ${(props) => props.theme.fontSizes?.sm || "0.85rem"};
+  font-size: ${(props) => props.theme.fontSizes?.xs || "0.7rem"};
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   transition: background-color
     ${(props) => props.theme.transitions?.fast || "0.2s ease"};
 `;
@@ -89,13 +90,13 @@ const TimerContainer = styled.div`
 const TimerDisplay = styled.div`
   font-family: "Courier New", monospace;
   font-weight: 700;
-  min-width: 52px;
+  min-width: 40px;
   text-align: center;
 `;
 
 const TimerControls = styled.div`
   display: flex;
-  gap: 6px;
+  gap: 4px;
 `;
 
 const TimerButton = styled.button`
@@ -106,9 +107,9 @@ const TimerButton = styled.button`
   border: none;
   color: ${(props) =>
     props.theme.colors?.text === "#333333" ? props.theme.colors.text : "white"};
-  width: 24px;
-  height: 24px;
-  font-size: 0.75rem;
+  width: 20px;
+  height: 20px;
+  font-size: 0.6rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -138,8 +139,8 @@ const ThemeToggleButton = styled.button`
   color: ${(props) =>
     props.theme.colors?.text === "#333333" ? props.theme.colors.text : "white"};
   border: none;
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -152,11 +153,11 @@ const ThemeToggleButton = styled.button`
       props.theme.colors?.text === "#333333"
         ? "rgba(0, 0, 0, 0.25)"
         : "rgba(255, 255, 255, 0.25)"};
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 
   i {
-    font-size: ${(props) => props.theme.fontSizes?.md || "1rem"};
+    font-size: ${(props) => props.theme.fontSizes?.sm || "0.85rem"};
   }
 `;
 

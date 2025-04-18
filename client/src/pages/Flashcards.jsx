@@ -1,4 +1,4 @@
-// src/pages/Flashcards.jsx
+// src/pages/Flashcards.jsx - Mobile-optimized version
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Header from "../components/Header";
@@ -13,18 +13,23 @@ const STORAGE_KEYS = {
   VERSION: "cquizy_version",
 };
 
+// Use viewport height to ensure the container fits on screen
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: ${(props) => props.theme.spacing?.md || "1rem"};
+  height: calc(100vh - 60px); /* Adjust based on header height */
+  padding: ${(props) => props.theme.spacing?.sm || "0.5rem"};
+  position: relative;
+  overflow: hidden;
 `;
 
+// Compact version of progress bar
 const ProgressBarWrapper = styled.div`
-  height: 8px;
+  height: 4px;
   width: 90%;
   max-width: 370px;
-  margin-bottom: ${(props) => props.theme.spacing?.sm || "0.5rem"};
+  margin-bottom: ${(props) => props.theme.spacing?.xs || "0.25rem"};
   background-color: ${(props) =>
     props.theme.colors?.text === "#333333" ? "#d0d0d0" : "#e0e0e0"};
   border-radius: ${(props) => props.theme.borderRadius?.sm || "4px"};
@@ -41,21 +46,23 @@ const ProgressBar = styled.div`
       ${(props) => props.theme.transitions?.medium || "0.3s ease"};
 `;
 
+// Smaller font and margin
 const QuestionCounter = styled.div`
-  font-size: ${(props) => props.theme.fontSizes?.sm || "0.9rem"};
-  margin-bottom: ${(props) => props.theme.spacing?.md || "1rem"};
+  font-size: ${(props) => props.theme.fontSizes?.xs || "0.75rem"};
+  margin-bottom: ${(props) => props.theme.spacing?.xs || "0.25rem"};
   color: ${(props) => props.theme.colors?.textSecondary || "inherit"};
 `;
 
+// More compact search bar
 const InputGroup = styled.div`
   display: flex;
   max-width: 370px;
   width: 100%;
-  margin-bottom: ${(props) => props.theme.spacing?.lg || "1.5rem"};
+  margin-bottom: ${(props) => props.theme.spacing?.sm || "0.5rem"};
 
   input {
     flex: 1;
-    padding: ${(props) => props.theme.spacing?.sm || "0.5rem"};
+    padding: ${(props) => props.theme.spacing?.xs || "0.25rem"};
     border: 1px solid ${(props) => props.theme.colors?.border || "#ccc"};
     border-radius: ${(props) =>
       `${props.theme.borderRadius?.sm || "4px"} 0 0 ${
@@ -68,16 +75,13 @@ const InputGroup = styled.div`
         ${(props) => props.theme.transitions?.fast || "0.2s ease"},
       border-color ${(props) => props.theme.transitions?.fast || "0.2s ease"},
       color ${(props) => props.theme.transitions?.fast || "0.2s ease"};
+    height: 32px;
   }
 
   button {
-    padding: 0 ${(props) => props.theme.spacing?.sm || "0.75rem"};
+    padding: 0 ${(props) => props.theme.spacing?.xs || "0.5rem"};
     background-color: ${(props) => props.theme.colors?.accent || "#007bff"};
-    color: ${(props) =>
-      props.theme.colors?.text === "#333333" &&
-      props.theme.colors?.accent === "#fff"
-        ? "#333"
-        : "#fff"};
+    color: white;
     border: none;
     border-radius: ${(props) =>
       `0 ${props.theme.borderRadius?.sm || "4px"} ${
@@ -88,62 +92,62 @@ const InputGroup = styled.div`
   }
 `;
 
+// Position the control panel at the bottom
 const ControlPanel = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: ${(props) => props.theme.spacing?.xl || "2rem"};
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
 `;
 
+// Smaller shuffle button
 const ShuffleButton = styled.button`
   background-color: ${(props) => props.theme.colors?.success || "#2ecc71"};
-  color: ${(props) =>
-    props.theme.colors?.text === "#333333" &&
-    props.theme.colors?.success === "#fff"
-      ? "#333"
-      : "white"};
+  color: white;
   border: none;
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  font-size: ${(props) => props.theme.fontSizes?.lg || "1.2rem"};
+  font-size: ${(props) => props.theme.fontSizes?.md || "1rem"};
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all ${(props) => props.theme.transitions?.medium || "0.3s ease"};
   box-shadow: ${(props) =>
-    props.theme.colors?.cardShadow || "0 4px 10px rgba(0, 0, 0, 0.2)"};
+    props.theme.colors?.cardShadow || "0 2px 6px rgba(0, 0, 0, 0.2)"};
 
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
-    background-color: ${(props) =>
-      props.theme.colors?.successDark || "#27ae60"};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   }
 
   &:active {
     transform: translateY(-1px);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   }
 `;
 
+// More compact swipe instructions
 const SwipeInstructions = styled.div`
-  font-size: ${(props) => props.theme.fontSizes?.sm || "0.9rem"};
+  font-size: ${(props) => props.theme.fontSizes?.xs || "0.7rem"};
   color: ${(props) => props.theme.colors?.textSecondary || "inherit"};
   text-align: center;
-  margin-top: ${(props) => props.theme.spacing?.md || "1rem"};
+  margin-top: ${(props) => props.theme.spacing?.xs || "0.25rem"};
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
   background: rgba(0, 0, 0, 0.05);
-  padding: 0.5rem;
-  border-radius: 20px;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
   width: fit-content;
   margin-left: auto;
   margin-right: auto;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   animation: fadeIn 1s ease, pulse 2s infinite;
 
   @keyframes fadeIn {
@@ -161,12 +165,12 @@ const SwipeInstructions = styled.div`
       transform: scale(1);
     }
     50% {
-      transform: scale(1.05);
+      transform: scale(1.03);
     }
   }
 
   i {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     animation: arrowSwipe 2s infinite;
   }
 
@@ -184,7 +188,7 @@ const SwipeInstructions = styled.div`
       transform: translateX(0);
     }
     50% {
-      transform: translateX(-5px);
+      transform: translateX(-3px);
     }
   }
 
@@ -194,15 +198,16 @@ const SwipeInstructions = styled.div`
       transform: translateX(0);
     }
     50% {
-      transform: translateX(5px);
+      transform: translateX(3px);
     }
   }
 `;
 
+// More compact alert boxes
 const AlertBox = styled.div`
-  padding: ${(props) => props.theme.spacing?.md || "1rem"};
+  padding: ${(props) => props.theme.spacing?.sm || "0.5rem"};
   border-radius: ${(props) => props.theme.borderRadius?.md || "8px"};
-  margin-bottom: ${(props) => props.theme.spacing?.lg || "1.5rem"};
+  margin-bottom: ${(props) => props.theme.spacing?.sm || "0.5rem"};
   text-align: center;
   background-color: ${(props) =>
     props.$type === "danger"
@@ -221,18 +226,20 @@ const AlertBox = styled.div`
       ? "#0c5460"
       : "white"};
   box-shadow: ${(props) =>
-    props.theme.colors?.cardShadow || "0 2px 5px rgba(0, 0, 0, 0.1)"};
+    props.theme.colors?.cardShadow || "0 1px 3px rgba(0, 0, 0, 0.1)"};
+  font-size: ${(props) => props.theme.fontSizes?.sm || "0.85rem"};
 `;
 
+// Smaller loading spinner
 const LoadingSpinner = styled.div`
-  width: 3rem;
-  height: 3rem;
-  border: 4px solid
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid
     ${(props) => props.theme.colors?.border || "rgba(0, 0, 0, 0.1)"};
   border-radius: 50%;
-  border-top: 4px solid ${(props) => props.theme.colors?.primary || "#3498db"};
+  border-top: 3px solid ${(props) => props.theme.colors?.primary || "#3498db"};
   animation: spin 1s linear infinite;
-  margin: 2rem 0;
+  margin: 1rem 0;
 
   @keyframes spin {
     0% {
@@ -244,6 +251,7 @@ const LoadingSpinner = styled.div`
   }
 `;
 
+// Main component - mostly unchanged but ensure it uses all screen space efficiently
 const Flashcards = () => {
   const [questions, setQuestions] = useState([]);
   const [fullQuestionSet, setFullQuestionSet] = useState([]);
@@ -275,17 +283,14 @@ const Flashcards = () => {
     initializeApp();
   }, []);
 
-  // Hide swipe guide after first card transition
+  // Hide swipe guide after first card transition or after 4 seconds (reduced from 6)
   useEffect(() => {
-    // Hide the swipe guide after user has swiped to a new card
-    // or after 6 seconds have passed, whichever comes first
     if (currentQuestionIndex > 0) {
       setShowSwipeGuide(false);
     } else {
-      // Auto-hide the guide after 6 seconds
       const timer = setTimeout(() => {
         setShowSwipeGuide(false);
-      }, 6000);
+      }, 4000);
 
       return () => clearTimeout(timer);
     }
@@ -366,7 +371,7 @@ const Flashcards = () => {
         <InputGroup>
           <input
             type="text"
-            placeholder="Search questions..."
+            placeholder="Search..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
@@ -399,7 +404,7 @@ const Flashcards = () => {
             {showSwipeGuide && (
               <SwipeInstructions>
                 <i className="fas fa-arrow-left"></i>
-                Swipe cards to navigate
+                Swipe to navigate
                 <i className="fas fa-arrow-right"></i>
               </SwipeInstructions>
             )}
