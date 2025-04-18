@@ -96,22 +96,37 @@ const CardHeader = styled.div`
 `;
 
 // Streamlined metadata area
+// Combined metadata block with category and context
 const CardMeta = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  max-width: 80%;
 `;
 
-// Compact category pill
-const CategoryTag = styled.div`
+// Unified category block
+const CategoryBlock = styled.div`
   background: rgba(52, 152, 219, 0.8);
   color: white;
-  padding: 0.3rem 0.7rem;
-  border-radius: 12px;
-  font-size: 0.65rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+`;
+
+// Category title
+const CategoryTitle = styled.div`
+  font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.6px;
+  line-height: 1.2;
+`;
+
+// Category context
+const CategoryContext = styled.div`
+  font-size: 0.7rem;
+  font-style: italic;
+  opacity: 0.9;
+  margin-top: 0.1rem;
+  line-height: 1.2;
 `;
 
 // Efficient bookmark button
@@ -134,20 +149,6 @@ const BookmarkButton = styled.button`
   &:active {
     transform: scale(0.95);
   }
-`;
-
-// Combined context pill that appears in-line with category
-const ContextPill = styled.div`
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.65rem;
-  padding: 0.3rem 0.7rem;
-  border-radius: 12px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 180px;
-  font-style: italic;
 `;
 
 // Minimal divider
@@ -317,16 +318,7 @@ const FlipHint = styled.div`
   }
 `;
 
-// Progress bar component
-const ProgressBar = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 3px;
-  background: rgba(52, 152, 219, 0.6);
-  width: ${(props) => (props.$progress || 0) * 100}%;
-  transition: width 0.4s ease;
-`;
+// Progress bar removed since it's redundant with app header
 
 const Flashcard = ({
   question,
@@ -338,7 +330,6 @@ const Flashcard = ({
   totalQuestions,
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const progress = (currentIndex + 1) / totalQuestions;
   const isFirst = currentIndex === 0;
   const isLast = currentIndex === totalQuestions - 1;
 
@@ -384,10 +375,12 @@ const Flashcard = ({
         <CardContent>
           <CardHeader>
             <CardMeta>
-              <CategoryTag>{question.category}</CategoryTag>
-              {question.context && (
-                <ContextPill>{question.context}</ContextPill>
-              )}
+              <CategoryBlock>
+                <CategoryTitle>{question.category}</CategoryTitle>
+                {question.context && (
+                  <CategoryContext>{question.context}</CategoryContext>
+                )}
+              </CategoryBlock>
             </CardMeta>
 
             <BookmarkButton
@@ -438,8 +431,6 @@ const Flashcard = ({
             Tap for answer
           </FlipHint>
         </CardContent>
-
-        <ProgressBar $progress={progress} />
       </CardFront>
 
       <CardBack $isActive={isFlipped} onClick={handleFlip}>
@@ -449,8 +440,6 @@ const Flashcard = ({
           <i className="fas fa-sync-alt"></i>
           Tap to return
         </FlipHint>
-
-        <ProgressBar $progress={progress} />
       </CardBack>
     </CardContainer>
   );
