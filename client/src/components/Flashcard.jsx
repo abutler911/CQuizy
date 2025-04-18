@@ -2,37 +2,43 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
+// Modern card container with improved dimensions and positioning
 const CardContainer = styled.div`
-  margin: 2rem auto;
-  max-width: 450px;
-  width: 90%;
-  height: 380px;
+  margin: 3rem auto;
+  max-width: 500px;
+  width: 92%;
+  height: 420px;
   position: relative;
+  perspective: 1500px;
 `;
 
+// Base card face with shared properties and improved 3D transitions
 const CardFace = styled.div`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: ${(props) => props.theme.borderRadius?.lg || "16px"};
+  border-radius: 20px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  backface-visibility: hidden;
   box-shadow: ${(props) =>
-    props.theme.colors?.cardShadow || "0 15px 35px rgba(0, 0, 0, 0.2)"};
-  transition: opacity
-    ${(props) => props.theme.transitions?.medium || "0.3s ease"};
-  opacity: ${(props) => (props.$isActive ? 1 : 0)};
-  z-index: ${(props) => (props.$isActive ? 2 : 1)};
+    props.$isActive
+      ? "0 22px 40px rgba(0, 0, 0, 0.25), 0 8px 16px rgba(0, 0, 0, 0.15)"
+      : "0 10px 30px rgba(0, 0, 0, 0.1)"};
+  transform: ${(props) => (props.$isActive ? "rotateY(0)" : "rotateY(180deg)")};
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.38, 0.02, 0.09, 1.66),
+    box-shadow 0.3s ease;
   pointer-events: ${(props) => (props.$isActive ? "auto" : "none")};
 `;
 
+// Front card with gradient and improved visual hierarchy
 const CardFront = styled(CardFace)`
-  background: ${(props) => props.theme.colors?.cardBackground || "#2c3e50"};
-  color: ${(props) =>
-    props.theme.colors?.text === "#333333" ? "#333333" : "white"};
+  background: linear-gradient(to bottom, #2c3e50, #1a2a38);
+  color: white;
   justify-content: space-between;
 
   &::before {
@@ -41,24 +47,23 @@ const CardFront = styled(CardFace)`
     top: 0;
     left: 0;
     right: 0;
-    height: 100px;
+    height: 130px;
     background: linear-gradient(
       to bottom,
-      ${(props) =>
-        `${props.theme.colors?.primary || "rgba(52, 152, 219, 0.3)"}30`},
+      rgba(52, 152, 219, 0.2),
       transparent
     );
     z-index: 0;
   }
 `;
 
+// Back card with improved gradient and focus on the answer
 const CardBack = styled(CardFace)`
-  background: ${(props) => props.theme.colors?.inputBackground || "#34495e"};
-  color: ${(props) =>
-    props.theme.colors?.text === "#333333" ? "#333333" : "white"};
+  background: linear-gradient(to bottom, #263545, #34495e);
+  color: white;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 2.5rem;
 
   &::before {
     content: "";
@@ -66,19 +71,15 @@ const CardBack = styled(CardFace)`
     bottom: 0;
     left: 0;
     right: 0;
-    height: 80px;
-    background: linear-gradient(
-      to top,
-      ${(props) =>
-        `${props.theme.colors?.primary || "rgba(52, 152, 219, 0.2)"}30`},
-      transparent
-    );
+    height: 100px;
+    background: linear-gradient(to top, rgba(52, 152, 219, 0.15), transparent);
     z-index: 0;
   }
 `;
 
+// Improved content area with better padding and structural layout
 const CardContent = styled.div`
-  padding: ${(props) => props.theme.spacing?.lg || "1.75rem"};
+  padding: 2rem;
   position: relative;
   z-index: 1;
   height: 100%;
@@ -86,162 +87,264 @@ const CardContent = styled.div`
   flex-direction: column;
 `;
 
+// Enhanced header with improved spacing
 const CardHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: ${(props) => props.theme.spacing?.sm || "0.5rem"};
+  margin-bottom: 0.75rem;
 `;
 
+// More vibrant category tag with refined styling
 const CategoryTag = styled.div`
-  background: ${(props) =>
-    `${props.theme.colors?.primary || "rgba(52, 152, 219, 0.9)"}e6`};
-  color: ${(props) =>
-    props.theme.colors?.text === "#333333" ? "#333333" : "white"};
-  padding: 0.4rem 0.8rem;
-  border-radius: ${(props) => props.theme.borderRadius?.pill || "20px"};
-  font-size: ${(props) => props.theme.fontSizes?.xs || "0.75rem"};
-  font-weight: 600;
+  background: rgba(52, 152, 219, 0.9);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 24px;
+  font-size: 0.8rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-`;
-
-const BookmarkButton = styled.button`
-  background: none;
-  border: none;
-  color: ${(props) =>
-    props.$active
-      ? "#e74c3c"
-      : props.theme.colors?.text === "#333333"
-      ? "rgba(0, 0, 0, 0.5)"
-      : "rgba(255, 255, 255, 0.5)"};
-  font-size: ${(props) => props.theme.fontSizes?.lg || "1.25rem"};
-  padding: ${(props) => props.theme.spacing?.sm || "0.5rem"};
-  cursor: pointer;
-  transition: all ${(props) => props.theme.transitions?.fast || "0.2s ease"};
+  letter-spacing: 0.7px;
+  box-shadow: 0 3px 12px rgba(52, 152, 219, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
-    color: ${(props) =>
-      props.$active
-        ? "#e74c3c"
-        : props.theme.colors?.text === "#333333"
-        ? "rgba(0, 0, 0, 0.8)"
-        : "rgba(255, 255, 255, 0.8)"};
-    transform: scale(1.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(52, 152, 219, 0.4);
   }
 `;
 
+// Improved bookmark button with better interaction
+const BookmarkButton = styled.button`
+  background: none;
+  border: none;
+  color: ${(props) => (props.$active ? "#ff6b6b" : "rgba(255, 255, 255, 0.6)")};
+  font-size: 1.4rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  &:hover {
+    color: ${(props) =>
+      props.$active ? "#ff8787" : "rgba(255, 255, 255, 0.9)"};
+    transform: scale(1.15)
+      rotate(${(props) => (props.$active ? "0deg" : "10deg")});
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+`;
+
+// Context info with improved readability and style
 const ContextInfo = styled.div`
-  font-size: ${(props) => props.theme.fontSizes?.xs || "0.7rem"};
-  color: ${(props) =>
-    props.theme.colors?.textMuted || "rgba(255, 255, 255, 0.6)"};
-  margin: ${(props) => props.theme.spacing?.sm || "0.75rem"} 0;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0.75rem 0;
   font-style: italic;
-  background: ${(props) =>
-    props.theme.colors?.text === "#333333"
-      ? "rgba(0, 0, 0, 0.05)"
-      : "rgba(255, 255, 255, 0.05)"};
-  padding: 0.5rem 0.75rem;
-  border-radius: ${(props) => props.theme.borderRadius?.sm || "6px"};
+  background: rgba(255, 255, 255, 0.07);
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  backdrop-filter: blur(2px);
+  border-left: 3px solid rgba(52, 152, 219, 0.6);
 
   strong {
-    font-weight: 600;
-    color: ${(props) =>
-      props.theme.colors?.textSecondary || "rgba(255, 255, 255, 0.8)"};
-    margin-right: 4px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    margin-right: 5px;
     font-style: normal;
   }
 `;
 
+// Subtle divider with animation
 const Divider = styled.hr`
   border: none;
-  height: 1px;
-  background: ${(props) =>
-    props.theme.colors?.border || "rgba(255, 255, 255, 0.1)"};
-  margin: ${(props) => props.theme.spacing?.md || "1rem"} 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  margin: 1.2rem 0;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 2px;
+    background: rgba(52, 152, 219, 0.7);
+  }
 `;
 
+// Enhanced question text with better typography
 const QuestionText = styled.div`
-  font-size: ${(props) => props.theme.fontSizes?.lg || "1.3rem"};
+  font-size: 1.5rem;
   font-weight: 500;
-  color: ${(props) =>
-    props.theme.colors?.text === "#333333" ? "#333333" : "white"};
-  line-height: 1.5;
-  margin: ${(props) => props.theme.spacing?.md || "1rem"} 0;
+  color: white;
+  line-height: 1.6;
+  margin: 1.5rem 0;
   flex-grow: 1;
   position: relative;
   z-index: 1;
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  letter-spacing: -0.01em;
+
+  &::first-letter {
+    font-size: 1.7rem;
+    font-weight: 600;
+  }
 `;
 
+// Answer text with improved typography and focus
 const AnswerText = styled.div`
-  font-size: ${(props) => props.theme.fontSizes?.lg || "1.3rem"};
-  color: ${(props) =>
-    props.theme.colors?.text === "#333333" ? "#333333" : "white"};
+  font-size: 1.5rem;
+  color: white;
   font-weight: 500;
   text-align: center;
-  line-height: 1.6;
+  line-height: 1.7;
   position: relative;
   z-index: 1;
   max-width: 90%;
-`;
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  letter-spacing: -0.01em;
 
-const CardFooter = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-top: auto;
-`;
-
-const QuestionNumber = styled.div`
-  background: ${(props) =>
-    `${props.theme.colors?.primary || "rgba(52, 152, 219, 0.2)"}30`};
-  color: ${(props) =>
-    props.theme.colors?.textSecondary || "rgba(255, 255, 255, 0.9)"};
-  padding: 0.25rem 0.6rem;
-  border-radius: ${(props) => props.theme.borderRadius?.md || "12px"};
-  font-size: ${(props) => props.theme.fontSizes?.xs || "0.75rem"};
-  display: flex;
-  align-items: center;
-`;
-
-const FlipHint = styled.div`
-  position: absolute;
-  bottom: ${(props) => props.theme.spacing?.md || "1rem"};
-  left: 50%;
-  transform: translateX(-50%);
-  color: ${(props) =>
-    props.theme.colors?.textMuted || "rgba(255, 255, 255, 0.5)"};
-  font-size: ${(props) => props.theme.fontSizes?.xs || "0.75rem"};
-  display: flex;
-  align-items: center;
-
-  i {
-    margin-right: 5px;
-    animation: pulse 1.5s infinite ease-in-out;
+  &::before {
+    content: '"';
+    display: block;
+    font-size: 3rem;
+    line-height: 0.5;
+    color: rgba(52, 152, 219, 0.4);
+    margin-bottom: 1rem;
   }
 
-  @keyframes pulse {
+  &::after {
+    content: '"';
+    display: block;
+    font-size: 3rem;
+    line-height: 0.5;
+    color: rgba(52, 152, 219, 0.4);
+    margin-top: 1rem;
+  }
+`;
+
+// Improved footer with better positioning
+const CardFooter = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 1rem;
+`;
+
+// Enhanced question number indicator
+const QuestionNumber = styled.div`
+  background: rgba(52, 152, 219, 0.15);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 0.35rem 0.8rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+
+  &::before {
+    content: "#";
+    margin-right: 4px;
+    font-weight: 700;
+    color: rgba(52, 152, 219, 0.8);
+  }
+`;
+
+// Navigation controls
+const NavControls = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
+
+const NavButton = styled.button`
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+
+  &:hover {
+    background: rgba(52, 152, 219, 0.7);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(0);
+    }
+  }
+`;
+
+// Improved flip hint with better animation
+const FlipHint = styled.div`
+  position: absolute;
+  bottom: 1.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  backdrop-filter: blur(2px);
+
+  i {
+    animation: flipPulse 2s infinite ease-in-out;
+  }
+
+  @keyframes flipPulse {
     0% {
       opacity: 0.5;
+      transform: rotate(0deg);
     }
     50% {
       opacity: 1;
+      transform: rotate(180deg);
     }
     100% {
       opacity: 0.5;
+      transform: rotate(360deg);
     }
   }
 `;
 
-const FlipButton = styled.div`
+// Progress bar component
+const ProgressBar = styled.div`
   position: absolute;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  top: 0;
+  bottom: 0;
   left: 0;
-  z-index: 10;
+  height: 4px;
+  background: rgba(52, 152, 219, 0.5);
+  width: ${(props) => (props.$progress || 0) * 100}%;
+  transition: width 0.4s ease;
 `;
 
 const Flashcard = ({
@@ -254,10 +357,18 @@ const Flashcard = ({
   totalQuestions,
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const progress = (currentIndex + 1) / totalQuestions;
+  const isFirst = currentIndex === 0;
+  const isLast = currentIndex === totalQuestions - 1;
 
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
   };
+
+  // Reset flip state when the question changes
+  useEffect(() => {
+    setIsFlipped(false);
+  }, [currentIndex]);
 
   useEffect(() => {
     const handleKeyPress = (event) => {
@@ -266,10 +377,10 @@ const Flashcard = ({
 
       switch (event.key) {
         case "ArrowLeft":
-          onPrevious();
+          if (!isFirst) onPrevious();
           break;
         case "ArrowRight":
-          onNext();
+          if (!isLast) onNext();
           break;
         case " ":
           event.preventDefault();
@@ -284,7 +395,7 @@ const Flashcard = ({
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [onNext, onPrevious, onBookmark]);
+  }, [onNext, onPrevious, onBookmark, isFirst, isLast]);
 
   return (
     <CardContainer>
@@ -318,13 +429,37 @@ const Flashcard = ({
             <QuestionNumber>
               {currentIndex + 1} of {totalQuestions}
             </QuestionNumber>
+
+            <NavControls>
+              <NavButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPrevious();
+                }}
+                disabled={isFirst}
+              >
+                <i className="fas fa-chevron-left" />
+              </NavButton>
+
+              <NavButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onNext();
+                }}
+                disabled={isLast}
+              >
+                <i className="fas fa-chevron-right" />
+              </NavButton>
+            </NavControls>
           </CardFooter>
 
           <FlipHint>
             <i className="fas fa-sync-alt"></i>
-            Tap to flip
+            Tap to reveal answer
           </FlipHint>
         </CardContent>
+
+        <ProgressBar $progress={progress} />
       </CardFront>
 
       <CardBack $isActive={isFlipped} onClick={handleFlip}>
@@ -334,6 +469,8 @@ const Flashcard = ({
           <i className="fas fa-sync-alt"></i>
           Tap to return
         </FlipHint>
+
+        <ProgressBar $progress={progress} />
       </CardBack>
     </CardContainer>
   );
