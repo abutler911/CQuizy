@@ -2,12 +2,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-// Modern card container with improved dimensions and positioning
+// Modern card container with optimized dimensions
 const CardContainer = styled.div`
-  margin: 3rem auto;
-  max-width: 500px;
-  width: 92%;
-  height: 420px;
+  margin: 2rem auto;
+  max-width: 480px;
+  width: 94%;
+  height: 360px;
   position: relative;
   perspective: 1500px;
 `;
@@ -19,15 +19,15 @@ const CardFace = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 20px;
+  border-radius: 16px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   backface-visibility: hidden;
   box-shadow: ${(props) =>
     props.$isActive
-      ? "0 22px 40px rgba(0, 0, 0, 0.25), 0 8px 16px rgba(0, 0, 0, 0.15)"
-      : "0 10px 30px rgba(0, 0, 0, 0.1)"};
+      ? "0 20px 30px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.1)"
+      : "0 10px 20px rgba(0, 0, 0, 0.1)"};
   transform: ${(props) => (props.$isActive ? "rotateY(0)" : "rotateY(180deg)")};
   transform-style: preserve-3d;
   transition: transform 0.6s cubic-bezier(0.38, 0.02, 0.09, 1.66),
@@ -35,9 +35,9 @@ const CardFace = styled.div`
   pointer-events: ${(props) => (props.$isActive ? "auto" : "none")};
 `;
 
-// Front card with gradient and improved visual hierarchy
+// Front card with gradient
 const CardFront = styled(CardFace)`
-  background: linear-gradient(to bottom, #2c3e50, #1a2a38);
+  background: linear-gradient(135deg, #2c3e50, #1a2a38);
   color: white;
   justify-content: space-between;
 
@@ -47,23 +47,23 @@ const CardFront = styled(CardFace)`
     top: 0;
     left: 0;
     right: 0;
-    height: 130px;
+    height: 80px;
     background: linear-gradient(
       to bottom,
-      rgba(52, 152, 219, 0.2),
+      rgba(52, 152, 219, 0.15),
       transparent
     );
     z-index: 0;
   }
 `;
 
-// Back card with improved gradient and focus on the answer
+// Back card with contrast gradient
 const CardBack = styled(CardFace)`
-  background: linear-gradient(to bottom, #263545, #34495e);
+  background: linear-gradient(135deg, #263545, #34495e);
   color: white;
   align-items: center;
   justify-content: center;
-  padding: 2.5rem;
+  padding: 2rem;
 
   &::before {
     content: "";
@@ -71,15 +71,15 @@ const CardBack = styled(CardFace)`
     bottom: 0;
     left: 0;
     right: 0;
-    height: 100px;
+    height: 80px;
     background: linear-gradient(to top, rgba(52, 152, 219, 0.15), transparent);
     z-index: 0;
   }
 `;
 
-// Improved content area with better padding and structural layout
+// Optimized content area with compact padding
 const CardContent = styled.div`
-  padding: 2rem;
+  padding: 1.5rem;
   position: relative;
   z-index: 1;
   height: 100%;
@@ -87,40 +87,40 @@ const CardContent = styled.div`
   flex-direction: column;
 `;
 
-// Enhanced header with improved spacing
+// Compact header with metadata combined
 const CardHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 `;
 
-// More vibrant category tag with refined styling
+// Streamlined metadata area
+const CardMeta = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+// Compact category pill
 const CategoryTag = styled.div`
-  background: rgba(52, 152, 219, 0.9);
+  background: rgba(52, 152, 219, 0.8);
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 24px;
-  font-size: 0.8rem;
-  font-weight: 700;
+  padding: 0.3rem 0.7rem;
+  border-radius: 12px;
+  font-size: 0.65rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.7px;
-  box-shadow: 0 3px 12px rgba(52, 152, 219, 0.3);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 14px rgba(52, 152, 219, 0.4);
-  }
+  letter-spacing: 0.6px;
 `;
 
-// Improved bookmark button with better interaction
+// Efficient bookmark button
 const BookmarkButton = styled.button`
   background: none;
   border: none;
   color: ${(props) => (props.$active ? "#ff6b6b" : "rgba(255, 255, 255, 0.6)")};
-  font-size: 1.4rem;
-  padding: 0.5rem;
+  font-size: 1.25rem;
+  padding: 0.3rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
@@ -136,150 +136,134 @@ const BookmarkButton = styled.button`
   }
 `;
 
-// Context info with improved readability and style
-const ContextInfo = styled.div`
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.7);
-  margin: 0.75rem 0;
+// Combined context pill that appears in-line with category
+const ContextPill = styled.div`
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.65rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
   font-style: italic;
-  background: rgba(255, 255, 255, 0.07);
-  padding: 0.7rem 1rem;
-  border-radius: 8px;
-  backdrop-filter: blur(2px);
-  border-left: 3px solid rgba(52, 152, 219, 0.6);
-
-  strong {
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.9);
-    margin-right: 5px;
-    font-style: normal;
-  }
 `;
 
-// Subtle divider with animation
+// Minimal divider
 const Divider = styled.hr`
   border: none;
-  height: 2px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(255, 255, 255, 0.15),
-    transparent
-  );
-  margin: 1.2rem 0;
-  position: relative;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 2px;
-    background: rgba(52, 152, 219, 0.7);
-  }
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0.7rem 0;
 `;
 
-// Enhanced question text with better typography
+// Streamlined question text with better sizing
 const QuestionText = styled.div`
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 500;
   color: white;
-  line-height: 1.6;
-  margin: 1.5rem 0;
+  line-height: 1.5;
+  margin: 0.75rem 0;
   flex-grow: 1;
   position: relative;
   z-index: 1;
   font-family: "Inter", "Segoe UI", system-ui, sans-serif;
-  letter-spacing: -0.01em;
+  overflow-y: auto;
+  padding-right: 0.5rem;
 
-  &::first-letter {
-    font-size: 1.7rem;
-    font-weight: 600;
+  /* Scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
   }
 `;
 
-// Answer text with improved typography and focus
+// Refined answer text
 const AnswerText = styled.div`
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   color: white;
   font-weight: 500;
   text-align: center;
-  line-height: 1.7;
+  line-height: 1.5;
   position: relative;
   z-index: 1;
-  max-width: 90%;
+  max-width: 94%;
+  max-height: 80%;
+  overflow-y: auto;
   font-family: "Inter", "Segoe UI", system-ui, sans-serif;
-  letter-spacing: -0.01em;
 
-  &::before {
-    content: '"';
-    display: block;
-    font-size: 3rem;
-    line-height: 0.5;
-    color: rgba(52, 152, 219, 0.4);
-    margin-bottom: 1rem;
+  /* Scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 4px;
   }
 
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+  }
+
+  &::before,
   &::after {
     content: '"';
-    display: block;
-    font-size: 3rem;
-    line-height: 0.5;
+    display: inline;
     color: rgba(52, 152, 219, 0.4);
-    margin-top: 1rem;
+    font-size: 1.5em;
+    line-height: 0;
+    vertical-align: -0.3em;
+    margin: 0 0.1em;
   }
 `;
 
-// Improved footer with better positioning
+// Compact footer
 const CardFooter = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: auto;
-  padding-top: 1rem;
+  padding-top: 0.5rem;
 `;
 
-// Enhanced question number indicator
-const QuestionNumber = styled.div`
-  background: rgba(52, 152, 219, 0.15);
-  color: rgba(255, 255, 255, 0.9);
-  padding: 0.35rem 0.8rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  display: flex;
-  align-items: center;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-
-  &::before {
-    content: "#";
-    margin-right: 4px;
-    font-weight: 700;
-    color: rgba(52, 152, 219, 0.8);
-  }
+// Minimalist question counter
+const QuestionCounter = styled.div`
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.7rem;
+  font-weight: 500;
 `;
 
-// Navigation controls
+// Compact navigation controls
 const NavControls = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
 `;
 
 const NavButton = styled.button`
   background: rgba(255, 255, 255, 0.1);
   border: none;
   color: white;
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 
   &:hover {
     background: rgba(52, 152, 219, 0.7);
@@ -300,38 +284,35 @@ const NavButton = styled.button`
   }
 `;
 
-// Improved flip hint with better animation
+// Subtle flip hint
 const FlipHint = styled.div`
   position: absolute;
-  bottom: 1.2rem;
+  bottom: 1rem;
   left: 50%;
   transform: translateX(-50%);
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.7rem;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  padding: 0.25rem 0.5rem;
+  border-radius: 10px;
   background: rgba(0, 0, 0, 0.15);
-  padding: 0.4rem 0.8rem;
-  border-radius: 20px;
-  backdrop-filter: blur(2px);
 
   i {
-    animation: flipPulse 2s infinite ease-in-out;
+    font-size: 0.7rem;
+    animation: pulse 1.5s infinite ease-in-out;
   }
 
-  @keyframes flipPulse {
-    0% {
+  @keyframes pulse {
+    0%,
+    100% {
       opacity: 0.5;
-      transform: rotate(0deg);
+      transform: scale(1);
     }
     50% {
       opacity: 1;
-      transform: rotate(180deg);
-    }
-    100% {
-      opacity: 0.5;
-      transform: rotate(360deg);
+      transform: scale(1.1);
     }
   }
 `;
@@ -341,8 +322,8 @@ const ProgressBar = styled.div`
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 4px;
-  background: rgba(52, 152, 219, 0.5);
+  height: 3px;
+  background: rgba(52, 152, 219, 0.6);
   width: ${(props) => (props.$progress || 0) * 100}%;
   transition: width 0.4s ease;
 `;
@@ -402,7 +383,12 @@ const Flashcard = ({
       <CardFront $isActive={!isFlipped} onClick={handleFlip}>
         <CardContent>
           <CardHeader>
-            <CategoryTag>{question.category}</CategoryTag>
+            <CardMeta>
+              <CategoryTag>{question.category}</CategoryTag>
+              {question.context && (
+                <ContextPill>{question.context}</ContextPill>
+              )}
+            </CardMeta>
 
             <BookmarkButton
               $active={isBookmarked}
@@ -415,20 +401,14 @@ const Flashcard = ({
             </BookmarkButton>
           </CardHeader>
 
-          {question.context && (
-            <ContextInfo>
-              <strong>Context:</strong> {question.context}
-            </ContextInfo>
-          )}
-
           <Divider />
 
           <QuestionText>{question.question}</QuestionText>
 
           <CardFooter>
-            <QuestionNumber>
-              {currentIndex + 1} of {totalQuestions}
-            </QuestionNumber>
+            <QuestionCounter>
+              {currentIndex + 1} / {totalQuestions}
+            </QuestionCounter>
 
             <NavControls>
               <NavButton
@@ -455,7 +435,7 @@ const Flashcard = ({
 
           <FlipHint>
             <i className="fas fa-sync-alt"></i>
-            Tap to reveal answer
+            Tap for answer
           </FlipHint>
         </CardContent>
 
