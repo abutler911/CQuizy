@@ -35,7 +35,7 @@ const CardFace = styled.div`
   pointer-events: ${(props) => (props.$isActive ? "auto" : "none")};
 `;
 
-// Front card with gradient
+// Front card with refined gradient
 const CardFront = styled(CardFace)`
   background: linear-gradient(135deg, #2c3e50, #1a2a38);
   color: white;
@@ -47,10 +47,10 @@ const CardFront = styled(CardFace)`
     top: 0;
     left: 0;
     right: 0;
-    height: 80px;
+    height: 70px;
     background: linear-gradient(
       to bottom,
-      rgba(52, 152, 219, 0.15),
+      rgba(52, 152, 219, 0.12),
       transparent
     );
     z-index: 0;
@@ -101,32 +101,35 @@ const CardMeta = styled.div`
   max-width: 80%;
 `;
 
-// Unified category block
+// Minimal category block
 const CategoryBlock = styled.div`
-  background: rgba(52, 152, 219, 0.8);
+  background: rgba(52, 152, 219, 0.7);
   color: white;
-  padding: 0.5rem 0.75rem;
-  border-radius: 8px;
-  display: flex;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  display: inline-flex;
   flex-direction: column;
+  font-size: 0.65rem;
+  max-width: 200px;
 `;
 
-// Category title
+// Category title - extremely compact
 const CategoryTitle = styled.div`
-  font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
-  line-height: 1.2;
+  letter-spacing: 0.5px;
+  line-height: 1.1;
 `;
 
-// Category context
+// Category context - small and subtle
 const CategoryContext = styled.div`
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   font-style: italic;
-  opacity: 0.9;
-  margin-top: 0.1rem;
-  line-height: 1.2;
+  opacity: 0.85;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 // Efficient bookmark button
@@ -230,59 +233,13 @@ const AnswerText = styled.div`
   }
 `;
 
-// Compact footer
+// Compact footer - without question counter or navigation
 const CardFooter = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin-top: auto;
   padding-top: 0.5rem;
-`;
-
-// Minimalist question counter
-const QuestionCounter = styled.div`
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.7rem;
-  font-weight: 500;
-`;
-
-// Compact navigation controls
-const NavControls = styled.div`
-  display: flex;
-  gap: 0.5rem;
-`;
-
-const NavButton = styled.button`
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: white;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.8rem;
-
-  &:hover {
-    background: rgba(52, 152, 219, 0.7);
-    transform: translateY(-2px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-
-  &:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    &:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateY(0);
-    }
-  }
 `;
 
 // Subtle flip hint
