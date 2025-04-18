@@ -33,20 +33,22 @@ const CardFace = styled.div`
   transform: ${(props) => {
     if (!props.$isActive) return "rotateY(180deg)";
 
-    // Handle exit animations
-    if (props.$exiting === "left") return "translateX(-120%)";
-    if (props.$exiting === "right") return "translateX(120%)";
+    // Handle exit animations with full off-screen movement
+    if (props.$exiting === "left") return "translateX(-150%)";
+    if (props.$exiting === "right") return "translateX(150%)";
 
     // Normal state with optional swipe offset
     return `rotateY(0) translateX(${props.$swipeOffset || 0}px)`;
   }};
   transform-style: preserve-3d;
   transition: ${(props) => {
-    if (props.$exiting) return "transform 0.3s ease-out";
+    if (props.$exiting) return "transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)";
     if (props.$swiping) return "transform 0.05s linear";
     return "transform 0.6s cubic-bezier(0.38, 0.02, 0.09, 1.66), box-shadow 0.3s ease";
   }};
-  pointer-events: ${(props) => (props.$isActive ? "auto" : "none")};
+  opacity: ${(props) => (props.$exiting ? "0.8" : "1")};
+  pointer-events: ${(props) =>
+    props.$isActive && !props.$exiting ? "auto" : "none"};
 `;
 
 // Front card with refined gradient
@@ -397,9 +399,6 @@ const Flashcard = ({
     touchStartYRef.current = e.touches[0].clientY;
     touchStartTimeRef.current = Date.now();
     setIsSwiping(true);
-
-    // Prevent default to avoid browser handling the touch
-    e.preventDefault();
   };
 
   const handleTouchMove = (e) => {
@@ -416,7 +415,7 @@ const Flashcard = ({
       return;
     }
 
-    // Prevent default to stop page scrolling
+    // Prevent default to stop page scrolling during horizontal swipe
     e.preventDefault();
 
     // Limit the maximum swipe offset and add resistance as the card moves farther
@@ -436,7 +435,7 @@ const Flashcard = ({
     }
   };
 
-  const handleTouchEnd = (e) => {
+  const handleTouchEnd = () => {
     if (!isSwiping || isFlipped || exitDirection) {
       setIsSwiping(false);
       return;
@@ -469,7 +468,7 @@ const Flashcard = ({
         setSwipeOffset(0);
       }
     } else {
-      // Not a strong enough swipe, reset
+      // Not a strong enough swipe, reset position
       setSwipeOffset(0);
     }
 
